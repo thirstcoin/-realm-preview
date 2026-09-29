@@ -2605,7 +2605,9 @@ function reqText(r) {
 }
 
 const locker = $("#locker");
-function openLocker() {
+async function openLocker() {
+  await startOfficialSite();
+
   const stands =
     SITE_MODE === "server"
       ? OFFICIAL_STANDINGS
@@ -2741,7 +2743,14 @@ if (!cur) {
   document.body.style.overflow = "hidden";
 }
 function closeLocker() { locker.classList.remove("on"); document.body.style.overflow = ""; }
-$("#regLocker").addEventListener("click", () => { SND.tap(); openLocker(); });
+$("#regLocker").addEventListener(
+  "click",
+  async () => {
+    await startOfficialSite();
+    SND.tap();
+    openLocker();
+  }
+);
 $("#lockerClose").addEventListener("click", closeLocker);
 $("#lockerBg").addEventListener("click", closeLocker);
 
@@ -2756,15 +2765,43 @@ $$("[data-standing]").forEach(b => b.addEventListener("click", () => {
   if (!regPanel.classList.contains("on")) $("#regCheck").click();
 }));
 const gl = $("#gateLocker");
-if (gl) gl.addEventListener("click", () => {
-  if (
-  SITE_MODE !== "server" &&
-  !ENT
-) { $("#registry").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
-    if (!regPanel.classList.contains("on")) $("#regCheck").click();
-    toast("Check your standing first"); return; }
-  SND.tap(); openLocker();
-});
+
+if (gl) {
+  gl.addEventListener(
+    "click",
+    async () => {
+      await startOfficialSite();
+
+      if (
+        SITE_MODE !== "server" &&
+        !ENT
+      ) {
+        $("#registry").scrollIntoView({
+          behavior: REDUCED
+            ? "auto"
+            : "smooth"
+        });
+
+        if (
+          !regPanel.classList.contains(
+            "on"
+          )
+        ) {
+          $("#regCheck").click();
+        }
+
+        toast(
+          "Check your standing first"
+        );
+
+        return;
+      }
+
+      SND.tap();
+      openLocker();
+    }
+  );
+}
 
 /* ============ boot ============ */
 onScroll();
