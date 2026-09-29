@@ -331,6 +331,149 @@ const Store = (() => {
   };
 })();
 
+/* ---------------- preview / official mode ---------------- */
+
+let MODE = "local";
+let AUTH_TOKEN = null;
+let SERVER_USER = null;
+let SERVER_PROFILE = null;
+let MODE_READY = false;
+
+function getTelegramWebApp() {
+  try {
+    // Direct game opened through Telegram.
+    if (
+      window.Telegram &&
+      window.Telegram.WebApp &&
+      window.Telegram.WebApp.initData
+    ) {
+      return window.Telegram.WebApp;
+    }
+
+    // Game embedded inside the DAZILLA site while the parent
+    // itself is running as a Telegram Mini App.
+    if (
+      window.parent &&
+      window.parent !== window &&
+      window.parent.Telegram &&
+      window.parent.Telegram.WebApp &&
+      window.parent.Telegram.WebApp.initData
+    ) {
+      return window.parent.Telegram.WebApp;
+    }
+  } catch (e) {}
+
+  return null;
+}
+
+async function officialApi(path, options = {}) {
+  if (!CONFIG.OFFICIAL_API_BASE) {
+    throw new Error("Official API is not configured");
+  }
+
+  const method = options.method || "GET";
+  const headers = {
+    ...(AUTH_TOKEN
+      ? { Authorization: "Bearer " + AUTH_TOKEN }
+      : {})
+  };
+
+  let body;
+
+  if (options.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify(options.body);
+  }
+
+  const response = await fetch(
+    CONFIG.OFFICIAL_API_BASE + path,
+    {
+      method,
+      headers,
+      body
+    }
+  );
+
+  const json = await response
+    .json()
+    .catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      json.error ||
+      "Official server request failed (" +
+        response.status +
+        ")"
+    );
+  }
+
+  return json;
+}
+
+async function initializeGameMode() {
+  const tg = getTelegramWebApp();
+
+  // Normal browser / embedded website play remains preview mode.
+  if (
+    !tg ||
+    !tg.initData ||
+    !CONFIG.OFFICIAL_API_BASE
+  ) {
+    MODE = "local";
+    MODE_READY = true;
+    return false;
+  }
+
+  try {
+    tg.ready();
+    tg.expand();
+
+    const login = await officialApi(
+      "/api/auth/telegram",
+      {
+        method: "POST",
+        body: {
+          initData: tg.initData
+        }
+      }
+    );
+
+    AUTH_TOKEN = login.token;
+    SERVER_USER = login.user;
+
+    const state = await officialApi(
+      "/api/dazilla/state"
+    );
+
+    SERVER_PROFILE = state.profile;
+    MODE = "server";
+    MODE_READY = true;
+
+    console.log(
+      "DAZILLA official mode authenticated"
+    );
+
+    return true;
+
+  } catch (e) {
+    console.warn(
+      "DAZILLA official login failed:",
+      e
+    );
+
+    // Never break preview play if Telegram/backend auth fails.
+    AUTH_TOKEN = null;
+    SERVER_USER = null;
+    SERVER_PROFILE = null;
+    MODE = "local";
+    MODE_READY = true;
+
+    return false;
+  }
+}
+
+const GAME_MODE_PROMISE = initializeGameMode();
+
 /* ---------------- sfx ---------------- */
 const SFX = (() => {
   let ctx = null;
