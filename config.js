@@ -7,7 +7,8 @@ window.DAZILLA_CONFIG = Object.freeze({
     // Game backend.
   // Leave blank until DAZILLA score/XP/leaderboard routes are live.
   API_BASE: "",
-
+OFFICIAL_API_BASE: "https://toezlandia-ecosystem-api.onrender.com",
+  
   // Guardian Registry backend.
   REGISTRY_API_BASE: "https://toezlandia-ecosystem-api.onrender.com/api/dazilla",
 
