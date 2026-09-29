@@ -339,6 +339,9 @@ let SERVER_USER = null;
 let SERVER_PROFILE = null;
 let MODE_READY = false;
 
+let OFFICIAL_RUN_ID = null;
+let RUN_STARTING = false;
+
 function getTelegramWebApp() {
   try {
     // Direct game opened through Telegram.
@@ -446,8 +449,10 @@ async function initializeGameMode() {
     );
 
     SERVER_PROFILE = state.profile;
-    MODE = "server";
-    MODE_READY = true;
+MODE = "server";
+MODE_READY = true;
+
+adoptOfficialProfile(SERVER_PROFILE);
 
     console.log(
       "DAZILLA official mode authenticated"
@@ -626,6 +631,57 @@ function setMissionMax(id, n) {
   if (n > m.have) { m.have = Math.min(m.need, n); Store.set("dt_missions", MISSIONS); checkDaily(); }
 }
 initMissions();
+
+function adoptOfficialProfile(profile) {
+  if (!profile || typeof profile !== "object") return;
+
+  REC.xp = Math.max(0, Number(profile.xp) || 0);
+  REC.best = Math.max(0, Number(profile.bestScore) || 0);
+  REC.kills = Math.max(0, Number(profile.kills) || 0);
+  REC.streak = Math.max(0, Number(profile.streak) || 0);
+  REC.lastDay = String(profile.lastDay || "");
+
+  Store.set(
+    "dt_bestchain",
+    Math.max(0, Number(profile.bestCombo) || 0)
+  );
+
+  Store.set(
+    "dt_bosses",
+    Math.max(0, Number(profile.bosses) || 0)
+  );
+
+  const m = profile.missions || {};
+
+  MISSIONS = {
+    day: m.day || todayKey(),
+    claimed: Boolean(m.claimed),
+    list: [
+      {
+        id: "jeets",
+        label: "Destroy 100 Jeets",
+        need: 100,
+        have: Math.max(0, Number(m.jeets) || 0)
+      },
+      {
+        id: "time",
+        label: "Survive 4 minutes",
+        need: 240,
+        have: Math.max(0, Number(m.survival) || 0),
+        unit: "s"
+      },
+      {
+        id: "ult",
+        label: "Use Turdquake 5 times",
+        need: 5,
+        have: Math.max(0, Number(m.ultUses) || 0)
+      }
+    ]
+  };
+
+  saveRec();
+  Store.set("dt_missions", MISSIONS);
+}
 
 /* ---------------- upgrades ---------------- */
 const RARITY = {
@@ -874,7 +930,8 @@ function killEnemy(e, launch, fx, fy) {
   if (e.dead) return;
   e.dead = true;
   const d = ETYPES[e.type];
-  G.kills++; REC.kills++;
+  G.kills++;
+if (MODE !== "server") REC.kills++;
   if (e.type === "jeet") G.jeetKills++;
   G.combo++;
   if (G.combo > G.bestCombo) G.bestCombo = G.combo;
@@ -2083,13 +2140,55 @@ function toast(msg) {
   clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600);
 }
 
-function startRun() {
-  SFX.unlock(); initMissions();
-  G = newGame(); G.running = true;
+async function startRun() {
+  if (RUN_STARTING) return;
+
+  RUN_STARTING = true;
+
+  SFX.unlock();
+  initMissions();
+
+  await GAME_MODE_PROMISE;
+
+  OFFICIAL_RUN_ID = null;
+
+  if (MODE === "server") {
+    try {
+      const started = await officialApi(
+        "/api/dazilla/run/start",
+        {
+          method: "POST",
+          body: {
+            season: CONFIG.SEASON
+          }
+        }
+      );
+
+      OFFICIAL_RUN_ID = started.runId;
+
+    } catch (e) {
+      console.warn(
+        "Official DAZILLA run could not start:",
+        e
+      );
+
+      toast(
+        "Official server unavailable · preview run"
+      );
+    }
+  }
+
+  G = newGame();
+  G.running = true;
+
   hideAllPanels();
   el("bosswrap").classList.remove("on");
-  startWave(1); updHud();
+
+  startWave(1);
+  updHud();
   playEntrance();
+
+  RUN_STARTING = false;
 }
 
 function playEntrance() {
@@ -2136,21 +2235,161 @@ function openUpgrades() {
 }
 
 function endRun() {
-  G.over = true; G.running = false;
+  G.over = true;
+  G.running = false;
+
   el("bosswrap").classList.remove("on");
+
   const secs = Math.floor(G.t / 1000);
-  const xpGain = Math.floor(G.score / 50) + G.wave * 10 + G.bossCount * 40;
-  REC.xp += xpGain;
-  const isPB = G.score > REC.best;
-  if (isPB) REC.best = G.score;
-  REC.scores.push({ n: REC.name || "Guardian", s: G.score, d: Date.now() });
-  REC.scores.sort((a, b) => b.s - a.s); REC.scores = REC.scores.slice(0, 25);
-  saveRec();
-  // trophy stats for the Guardian Locker — records only, never gameplay values
-  if (G.bestCombo > Store.get("dt_bestchain", 0)) Store.set("dt_bestchain", G.bestCombo);
-  if (G.bossCount) Store.set("dt_bosses", Store.get("dt_bosses", 0) + G.bossCount);
-  bumpMission("jeets", G.jeetKills); setMissionMax("time", secs);
-  pushGlobal(G.kills);
+
+  let xpGain =
+    Math.floor(G.score / 50) +
+    G.wave * 10 +
+    G.bossCount * 40;
+
+  let isPB = G.score > REC.best;
+
+  const runId = OFFICIAL_RUN_ID;
+
+  const official =
+    MODE === "server" &&
+    Boolean(runId);
+
+  OFFICIAL_RUN_ID = null;
+
+  if (official) {
+    const payload = {
+      runId,
+      durationSec: secs,
+      score: Math.floor(G.score),
+      kills: G.kills,
+      jeetKills: G.jeetKills,
+      wave: G.wave,
+      bossCount: G.bossCount,
+      bestCombo: G.bestCombo,
+      ultUses: G.ultUses
+    };
+
+    officialApi(
+      "/api/dazilla/run/finish",
+      {
+        method: "POST",
+        body: payload
+      }
+    )
+      .then(result => {
+        if (
+          Number.isFinite(
+            Number(result.xpGain)
+          )
+        ) {
+          xpGain = Number(result.xpGain);
+
+          el("resXp").textContent =
+            "+" + fmt(xpGain);
+        }
+
+        isPB = Boolean(
+          result.personalBest
+        );
+
+        el("pbFlag").classList.toggle(
+          "on",
+          isPB
+        );
+
+        if (result.profile) {
+          SERVER_PROFILE =
+            result.profile;
+
+          adoptOfficialProfile(
+            result.profile
+          );
+        }
+
+        toast(
+          "Official run saved · +" +
+          fmt(xpGain) +
+          " XP"
+        );
+      })
+      .catch(e => {
+        console.warn(
+          "Official DAZILLA run rejected:",
+          e
+        );
+
+        toast(
+          "Official run not saved · " +
+          e.message
+        );
+      });
+
+  } else {
+    // Normal browser preview, or a Telegram run that could
+    // not obtain an official run ID.
+    REC.xp += xpGain;
+
+    if (
+      MODE === "server"
+    ) {
+      REC.kills += G.kills;
+    }
+
+    if (isPB) {
+      REC.best = G.score;
+    }
+
+    REC.scores.push({
+      n: REC.name || "Guardian",
+      s: G.score,
+      d: Date.now()
+    });
+
+    REC.scores.sort(
+      (a, b) => b.s - a.s
+    );
+
+    REC.scores =
+      REC.scores.slice(0, 25);
+
+    saveRec();
+
+    if (
+      G.bestCombo >
+      Store.get("dt_bestchain", 0)
+    ) {
+      Store.set(
+        "dt_bestchain",
+        G.bestCombo
+      );
+    }
+
+    if (G.bossCount) {
+      Store.set(
+        "dt_bosses",
+        Store.get("dt_bosses", 0) +
+          G.bossCount
+      );
+    }
+
+    bumpMission(
+      "jeets",
+      G.jeetKills
+    );
+
+    setMissionMax(
+      "time",
+      secs
+    );
+
+    pushGlobal(G.kills);
+  }
+
+  const resultXp =
+    official
+      ? REC.xp + xpGain
+      : REC.xp;
 
   el("resTime").textContent = Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0");
   el("resScore").textContent = fmt(G.score);
@@ -2159,7 +2398,7 @@ function endRun() {
   el("resWaves").textContent = G.wave;
   el("resBoss").textContent = G.bossCount;
   el("resXp").textContent = "+" + fmt(xpGain);
-  el("resTier").textContent = rankName(guardianLevel(REC.xp));
+  el("resTier").textContent = rankName(guardianLevel(resultXp));
   paintIdentity();
   el("pbFlag").classList.toggle("on", isPB);
 
@@ -2287,8 +2526,24 @@ async function shareScore() {
 }
 
 /* ---------------- wiring ---------------- */
-el("playBtn").addEventListener("click", () => {
-  if (!REC.name) { const n = prompt("Guardian name for the leaderboard:", "Guardian"); REC.name = (n || "Guardian").slice(0, 14); saveRec(); }
+el("playBtn").addEventListener("click", async () => {
+  await GAME_MODE_PROMISE;
+
+  if (
+    MODE !== "server" &&
+    !REC.name
+  ) {
+    const n = prompt(
+      "Guardian name for the leaderboard:",
+      "Guardian"
+    );
+
+    REC.name =
+      (n || "Guardian").slice(0, 14);
+
+    saveRec();
+  }
+
   startRun();
 });
 el("againBtn").addEventListener("click", startRun);
