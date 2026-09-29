@@ -1453,12 +1453,24 @@ function unlockPage() {
   document.body.style.top = "";
   window.scrollTo(0, scrollLockY);
 }
-function openPlay() {
+async function openPlay() {
+  await startOfficialSite();
+
   const c = conv();
+
   if (!REDUCED) {
-    c.classList.remove("out"); void c.offsetWidth; c.classList.add("in");
-    setTimeout(mountPlay, 430);
-  } else mountPlay();
+    c.classList.remove("out");
+    void c.offsetWidth;
+    c.classList.add("in");
+
+    setTimeout(
+      mountPlay,
+      430
+    );
+
+  } else {
+    mountPlay();
+  }
 }
 function mountPlay() {
   const c = conv();
