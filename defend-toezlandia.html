@@ -647,11 +647,53 @@ function adoptOfficialProfile(profile) {
   );
 
   Store.set(
-    "dt_bosses",
-    Math.max(0, Number(profile.bosses) || 0)
+  "dt_bosses",
+  Math.max(0, Number(profile.bosses) || 0)
+);
+
+if (
+  profile.loadout &&
+  typeof profile.loadout === "object"
+) {
+  Object.assign(
+    LOADOUT,
+    profile.loadout
   );
 
-  const m = profile.missions || {};
+  Store.set(
+    "dt_loadout",
+    LOADOUT
+  );
+
+  COS.entrance =
+    LOADOUT.entrance || "ent_none";
+
+  COS.trail =
+    LOADOUT.trail || "trail_none";
+
+  COS.quake =
+    LOADOUT.quake || "quake_green";
+
+  COS.kill =
+    LOADOUT.kill || "kill_std";
+
+  COS.crest =
+    LOADOUT.crest || "crest_tz";
+
+  COS.frame =
+    LOADOUT.frame || "frame_plain";
+
+  COS.plate =
+    LOADOUT.plate || "plate_bone";
+
+  COS.badge =
+    LOADOUT.badge || "badge_none";
+
+  COS.banner =
+    LOADOUT.banner || "ban_toez";
+}
+
+const m = profile.missions || {};
 
   MISSIONS = {
     day: m.day || todayKey(),
