@@ -2015,16 +2015,24 @@ function toast(msg) {
    THE REGISTRY — read-only entitlement lookup.
    The wallet is an entitlement source, never the player account.
    ============================================================ */
+const APP_CONFIG = window.DAZILLA_CONFIG || {};
+
 const REG = {
-  // Fill these in when the mints and an RPC (or your own API) exist.
-  API: null,                    // e.g. "https://api.defendtoezlandia.xyz"  -> GET /standing?wallet=
-  RPC: null,                    // e.g. "https://your-rpc.example/xxxx"     -> direct balance read
-  MINT_DAZILLA: null,
-  MINT_TOEZ: null,
-  MIN_DAZILLA: 1,
-  MIN_TOEZ: 1,
-  BIG_TOEZ: 1000000,
-  TTL: 10 * 60 * 1000           // cache balances for ten minutes
+  API: (APP_CONFIG.API_BASE || "").replace(/\/+$/, "") || null,
+
+  // Keep direct RPC disabled in the public website.
+  // Holder verification will go through our backend so RPC
+  // credentials/rate-limits are not exposed in browser code.
+  RPC: null,
+
+  MINT_DAZILLA: APP_CONFIG.DAZILLA_MINT || null,
+  MINT_TOEZ: APP_CONFIG.TOEZ_MINT || null,
+
+  MIN_DAZILLA: Number(APP_CONFIG.MIN_DAZILLA || 1),
+  MIN_TOEZ: Number(APP_CONFIG.MIN_TOEZ || 1),
+  BIG_TOEZ: Number(APP_CONFIG.ROYAL_GUARD_TOEZ || 1000000),
+
+  TTL: 10 * 60 * 1000
 };
 
 const STANDINGS = [
