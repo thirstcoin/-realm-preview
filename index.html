@@ -2018,7 +2018,7 @@ function toast(msg) {
 const APP_CONFIG = window.DAZILLA_CONFIG || {};
 
 const REG = {
-  API: (APP_CONFIG.API_BASE || "").replace(/\/+$/, "") || null,
+  API: (APP_CONFIG.REGISTRY_API_BASE || "").replace(/\/+$/, "") || null,
 
   // Keep direct RPC disabled in the public website.
   // Holder verification will go through our backend so RPC
