@@ -2437,29 +2437,128 @@ function paintIdentity() {
 }
 
 /* ---------------- global / leaderboard ---------------- */
+
 function pushGlobal(kills) {
-  Store.set("dt_globalkills", REC.kills);
-  if (CONFIG.API_BASE) fetch(CONFIG.API_BASE + "/defense", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kills, season: CONFIG.SEASON }) }).catch(() => {});
+  // Official Telegram runs are already counted by the server
+  // when /api/dazilla/run/finish is accepted.
+  if (MODE === "server") return;
+
+  Store.set(
+    "dt_globalkills",
+    REC.kills
+  );
 }
+
 async function loadGlobal() {
   let total = REC.kills;
-  if (CONFIG.API_BASE) { try { const j = await (await fetch(CONFIG.API_BASE + "/defense")).json(); if (typeof j.total === "number") total = j.total; } catch (e) {} }
-  const pct = clamp(total / CONFIG.GLOBAL_GOAL * 100, 0, 100);
-  el("globalFill").style.width = pct + "%";
-  el("globalTxt").textContent = fmt(total) + " / " + fmt(CONFIG.GLOBAL_GOAL) + " invaders defeated · " + pct.toFixed(1) + "% secure" + (CONFIG.API_BASE ? "" : " (this device)");
+  let isGlobal = false;
+
+  if (MODE === "server") {
+    try {
+      const result = await officialApi(
+        "/api/dazilla/defense"
+      );
+
+      if (
+        typeof result.total === "number"
+      ) {
+        total = result.total;
+        isGlobal = true;
+      }
+    } catch (e) {
+      console.warn(
+        "Unable to load global defense:",
+        e
+      );
+    }
+  }
+
+  const pct = clamp(
+    total / CONFIG.GLOBAL_GOAL * 100,
+    0,
+    100
+  );
+
+  el("globalFill").style.width =
+    pct + "%";
+
+  el("globalTxt").textContent =
+    fmt(total) +
+    " / " +
+    fmt(CONFIG.GLOBAL_GOAL) +
+    " invaders defeated · " +
+    pct.toFixed(1) +
+    "% secure" +
+    (isGlobal ? "" : " (this device)");
 }
+
 async function openLeaderboard() {
-  hideAllPanels(); show("lbWrap", true);
-  const list = el("lbList"); list.innerHTML = "";
-  let rows = REC.scores.slice(0, 10);
-  el("lbScope").textContent = (CONFIG.API_BASE ? "Global" : "This device") + " · season " + CONFIG.SEASON;
-  if (CONFIG.API_BASE) { try { const j = await (await fetch(CONFIG.API_BASE + "/leaderboard?season=" + CONFIG.SEASON)).json(); if (Array.isArray(j.rows)) rows = j.rows.slice(0, 10); } catch (e) {} }
-  if (!rows.length) list.innerHTML = '<p class="small">No runs yet. Defend the gates to claim the top slot.</p>';
+  hideAllPanels();
+  show("lbWrap", true);
+
+  const list = el("lbList");
+  list.innerHTML = "";
+
+  let rows =
+    REC.scores.slice(0, 10);
+
+  let official = false;
+
+  if (MODE === "server") {
+    try {
+      const result = await officialApi(
+        "/api/dazilla/leaderboard"
+      );
+
+      if (
+        Array.isArray(result.rows)
+      ) {
+        rows =
+          result.rows.slice(0, 10);
+
+        official = true;
+      }
+
+    } catch (e) {
+      console.warn(
+        "Unable to load official leaderboard:",
+        e
+      );
+    }
+  }
+
+  el("lbScope").textContent =
+    (official
+      ? "Official Global"
+      : "This device") +
+    " · season " +
+    CONFIG.SEASON;
+
+  if (!rows.length) {
+    list.innerHTML =
+      '<p class="small">No runs yet. Defend the gates to claim the top slot.</p>';
+  }
+
   rows.forEach((r, i) => {
-    const d = document.createElement("div"); d.className = "lbrow";
-    d.innerHTML = "<span>" + (i + 1) + ". " + (r.n || "Guardian") + "</span><b>" + fmt(r.s) + "</b>";
+    const d =
+      document.createElement("div");
+
+    d.className =
+      "lbrow" +
+      (r.me ? " me" : "");
+
+    d.innerHTML =
+      "<span>" +
+      (r.rank || i + 1) +
+      ". " +
+      (r.n || "Guardian") +
+      "</span><b>" +
+      fmt(r.s) +
+      "</b>";
+
     list.appendChild(d);
   });
+
   loadGlobal();
 }
 function openProfile() {
