@@ -11,7 +11,7 @@ window.DAZILLA_CONFIG = Object.freeze({
   // Solana token mint addresses.
   // TOEZ can be filled as soon as we confirm the real mint.
   // DAZILLA stays blank until the launch mint exists.
-  TOEZ_MINT: "",
+  TOEZ_MINT: "3DRCui7ZbEykhrUHMbyXSvn5731fbKchFTFvs1Wjpump",
   DAZILLA_MINT: "",
 
   // Holder standings.
