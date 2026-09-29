@@ -912,10 +912,32 @@ footer{padding:60px 0 46px;border-top:1px solid color-mix(in srgb,var(--accent) 
       <p class="lede">Holding is recognition, access and identity — not a score multiplier. A leaderboard where the biggest wallet wins is not a leaderboard.</p>
 
       <div class="regbar">
-        <button class="btn" id="regCheck">Check my standing</button>
-        <button class="btn ghost" id="regLocker" hidden>Enter Guardian Locker</button>
-        <button class="btn ghost" id="regForget" hidden>Forget wallet</button>
-      </div>
+  <button class="btn" id="regCheck">Check my standing</button>
+
+  <button
+    class="btn"
+    id="regLinkWallet"
+    hidden
+  >
+    Link verified wallet
+  </button>
+
+  <button
+    class="btn ghost"
+    id="regLocker"
+    hidden
+  >
+    Enter Guardian Locker
+  </button>
+
+  <button
+    class="btn ghost"
+    id="regForget"
+    hidden
+  >
+    Forget wallet
+  </button>
+</div>
       <div class="trust">🔒 <span><b>Read-only.</b> No transaction. No signature required. Nothing is ever sent from your wallet.</span></div>
 
       <div id="regPanel">
@@ -2276,6 +2298,8 @@ async function initializeOfficialSite() {
 
     SITE_MODE = "server";
 
+$("#regLinkWallet").hidden = false;
+
 paintStandings(
   OFFICIAL_STANDINGS,
   true
@@ -2361,6 +2385,68 @@ async function saveOfficialLoadout() {
 
   return true;
 }
+
+const SHARED_WALLET_LINK_URL =
+  "https://toezogtoeken.xyz/wallet-link.html";
+
+async function startOfficialWalletLink() {
+  await startOfficialSite();
+
+  if (
+    SITE_MODE !== "server" ||
+    !SITE_AUTH_TOKEN
+  ) {
+    toast(
+      "Open DAZILLA through @DazillaBot first"
+    );
+
+    return;
+  }
+
+  try {
+    const result =
+      await siteOfficialApi(
+        "/api/wallet/link-session",
+        {
+          method: "POST",
+          body: {}
+        }
+      );
+
+    const verifyUrl =
+      SHARED_WALLET_LINK_URL +
+      "?t=" +
+      encodeURIComponent(
+        result.token
+      );
+
+    const phantomUrl =
+      "https://phantom.app/ul/browse/" +
+      encodeURIComponent(
+        verifyUrl
+      ) +
+      "?ref=" +
+      encodeURIComponent(
+        location.origin
+      );
+
+    window.open(
+      phantomUrl,
+      "_blank"
+    );
+
+  } catch (e) {
+    toast(
+      e.message ||
+      "Could not start wallet verification"
+    );
+  }
+}
+
+$("#regLinkWallet").addEventListener(
+  "click",
+  startOfficialWalletLink
+);
 
 const B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
