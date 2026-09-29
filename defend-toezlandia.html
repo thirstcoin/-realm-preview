@@ -258,14 +258,16 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;
    DEFEND TOEZLANDIA — v2
    Single file. No dependencies. Art is inlined below.
    ============================================================ */
+const APP_CONFIG = window.DAZILLA_CONFIG || {};
+
 const CONFIG = {
-  DAZILLA_CA: "DAZILLA_CONTRACT_ADDRESS_PLACEHOLDER",
-  TOEZ_CA:    "TOEZ_CONTRACT_ADDRESS_PLACEHOLDER",
-  API_BASE:   null,
-  SITE:       "DefendToezlandia.xyz",
-  SEASON:     1,
-  GLOBAL_GOAL: 1000000,
-  CAMERA_FX: true      // impact shake / punch only — never driven by input. false = bolted down.
+  DAZILLA_CA: APP_CONFIG.DAZILLA_MINT || "",
+  TOEZ_CA: APP_CONFIG.TOEZ_MINT || "",
+  API_BASE: (APP_CONFIG.API_BASE || "").replace(/\/+$/, "") || null,
+  SITE: location.hostname || "dazillaz.com",
+  SEASON: Number(APP_CONFIG.SEASON || 1),
+  GLOBAL_GOAL: Number(APP_CONFIG.GLOBAL_GOAL || 1000000),
+  CAMERA_FX: true
 };
 
 /* ---------------- inlined art ---------------- */
