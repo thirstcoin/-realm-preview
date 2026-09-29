@@ -2276,9 +2276,14 @@ async function initializeOfficialSite() {
 
     SITE_MODE = "server";
 
-    console.log(
-      "DAZILLA website official mode authenticated"
-    );
+paintStandings(
+  OFFICIAL_STANDINGS,
+  true
+);
+
+console.log(
+  "DAZILLA website official mode authenticated"
+);
 
     return true;
 
@@ -2305,6 +2310,56 @@ function startOfficialSite() {
   }
 
   return OFFICIAL_SITE_PROMISE;
+}
+
+async function saveOfficialLoadout() {
+  saveLoadout();
+
+  if (
+    SITE_MODE !== "server" ||
+    !SITE_AUTH_TOKEN
+  ) {
+    return true;
+  }
+
+  const result =
+    await siteOfficialApi(
+      "/api/dazilla/loadout",
+      {
+        method: "POST",
+        body: {
+          loadout: LOADOUT
+        }
+      }
+    );
+
+  if (
+    result.loadout &&
+    typeof result.loadout === "object"
+  ) {
+    Object.assign(
+      LOADOUT,
+      result.loadout
+    );
+
+    saveLoadout();
+  }
+
+  if (
+    Array.isArray(
+      result.standings
+    )
+  ) {
+    OFFICIAL_STANDINGS =
+      result.standings;
+  }
+
+  if (result.profile) {
+    SITE_PROFILE =
+      result.profile;
+  }
+
+  return true;
 }
 
 const B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
@@ -2373,8 +2428,11 @@ function paintStandings(list, animate) {
     } else el.classList.toggle("live", has);
   });
   const any = list.length > 0;
-  $("#regLocker").hidden = !ENT;
-  $("#regForget").hidden = !ENT;
+  $("#regLocker").hidden =
+  !ENT &&
+  SITE_MODE !== "server";
+
+$("#regForget").hidden = !ENT;
   return any;
 }
 
@@ -2548,7 +2606,14 @@ function reqText(r) {
 
 const locker = $("#locker");
 function openLocker() {
-  const stands = (ENT && ENT.standings) || [];
+  const stands =
+    SITE_MODE === "server"
+      ? OFFICIAL_STANDINGS
+      : (
+          (ENT && ENT.standings) ||
+          []
+        );
+
   const st = earnedStats();
   $("#lockerWho").textContent = stands.length
     ? stands.map(id => STANDINGS.find(x => x.id === id).n).join(" · ")
@@ -2558,10 +2623,42 @@ function openLocker() {
     : "You can still equip anything you have earned on the road. Trophies do not need a wallet.";
   const box = $("#lockerSlots"); box.innerHTML = "";
   LOCKER.forEach(slot => {
-    if (!LOADOUT[slot.k]) LOADOUT[slot.k] = slot.o[0].id;
-    const sec = document.createElement("div");
-    sec.className = "slot";
-    const cur = slot.o.find(o => o.id === LOADOUT[slot.k]) || slot.o[0];
+    if (!LOADOUT[slot.k]) {
+  LOADOUT[slot.k] =
+    slot.o[0].id;
+}
+
+const sec =
+  document.createElement("div");
+
+sec.className = "slot";
+
+let cur =
+  slot.o.find(
+    o =>
+      o.id === LOADOUT[slot.k] &&
+      reqMet(
+        o.r,
+        stands,
+        st
+      )
+  );
+
+if (!cur) {
+  cur =
+    slot.o.find(
+      o =>
+        reqMet(
+          o.r,
+          stands,
+          st
+        )
+    ) ||
+    slot.o[0];
+
+  LOADOUT[slot.k] =
+    cur.id;
+}
     sec.innerHTML = '<h4>' + slot.n + '</h4><div class="eq">Equipped: <span>' + cur.n + '</span></div>' +
                     '<div class="opts"></div>';
     const opts = sec.querySelector(".opts");
@@ -2571,13 +2668,70 @@ function openLocker() {
       b.className = "opt " + (ok ? "" : "off ") + (LOADOUT[slot.k] === o.id && ok ? "on" : "");
       b.innerHTML = '<span class="g">' + o.g + '</span><span class="n">' + o.n + '</span>' +
         '<span class="rq' + (o.r.t === "earn" ? " earned" : "") + '">' + reqText(o.r) + '</span>';
-      b.addEventListener("click", () => {
-        if (!ok) { toast(o.r.t === "earn" ? "Win it on the road: " + o.r.d : "Requires " + reqText(o.r)); return; }
-        LOADOUT[slot.k] = o.id; saveLoadout(); SND.tap();
-        sec.querySelector(".eq span").textContent = o.n;
-        opts.querySelectorAll(".opt").forEach(x => x.classList.remove("on"));
-        b.classList.add("on");
-      });
+      b.addEventListener(
+  "click",
+  async () => {
+    if (!ok) {
+      toast(
+        o.r.t === "earn"
+          ? "Win it on the road: " +
+              o.r.d
+          : "Requires " +
+              reqText(o.r)
+      );
+
+      return;
+    }
+
+    const previous =
+      LOADOUT[slot.k];
+
+    LOADOUT[slot.k] =
+      o.id;
+
+    saveLoadout();
+    SND.tap();
+
+    sec.querySelector(
+      ".eq span"
+    ).textContent = o.n;
+
+    opts
+      .querySelectorAll(".opt")
+      .forEach(
+        x =>
+          x.classList.remove(
+            "on"
+          )
+      );
+
+    b.classList.add("on");
+
+    if (
+      SITE_MODE === "server"
+    ) {
+      try {
+        await saveOfficialLoadout();
+
+        toast(
+          "Guardian Locker saved"
+        );
+
+      } catch (e) {
+        LOADOUT[slot.k] =
+          previous;
+
+        saveLoadout();
+
+        toast(
+          "Could not save that cosmetic"
+        );
+
+        openLocker();
+      }
+    }
+  }
+);
       opts.appendChild(b);
     });
     box.appendChild(sec);
@@ -2603,7 +2757,10 @@ $$("[data-standing]").forEach(b => b.addEventListener("click", () => {
 }));
 const gl = $("#gateLocker");
 if (gl) gl.addEventListener("click", () => {
-  if (!ENT) { $("#registry").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+  if (
+  SITE_MODE !== "server" &&
+  !ENT
+) { $("#registry").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
     if (!regPanel.classList.contains("on")) $("#regCheck").click();
     toast("Check your standing first"); return; }
   SND.tap(); openLocker();
