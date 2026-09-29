@@ -264,7 +264,14 @@ const APP_CONFIG = window.DAZILLA_CONFIG || {};
 const CONFIG = {
   DAZILLA_CA: APP_CONFIG.DAZILLA_MINT || "",
   TOEZ_CA: APP_CONFIG.TOEZ_MINT || "",
+
+  // Preview backend stays disabled.
   API_BASE: (APP_CONFIG.API_BASE || "").replace(/\/+$/, "") || null,
+
+  // Used only after a valid Telegram Mini App login.
+  OFFICIAL_API_BASE:
+    (APP_CONFIG.OFFICIAL_API_BASE || "").replace(/\/+$/, "") || null,
+
   SITE: location.hostname || "dazillaz.com",
   SEASON: Number(APP_CONFIG.SEASON || 1),
   GLOBAL_GOAL: Number(APP_CONFIG.GLOBAL_GOAL || 1000000),
