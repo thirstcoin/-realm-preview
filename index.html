@@ -2057,6 +2057,256 @@ let LOADOUT = ls("dt_loadout", {});
 function saveEnt() { try { localStorage.setItem("dt_ent", JSON.stringify(ENT)); } catch (e) {} }
 function saveLoadout() { try { localStorage.setItem("dt_loadout", JSON.stringify(LOADOUT)); } catch (e) {} }
 
+/* ============================================================
+   OFFICIAL DAZILLA TELEGRAM MODE
+   Normal browser = local website.
+   @DazillaBot Mini App = authenticated shared ecosystem account.
+   ============================================================ */
+
+const OFFICIAL_API_BASE =
+  (APP_CONFIG.OFFICIAL_API_BASE || "")
+    .replace(/\/+$/, "");
+
+let SITE_MODE = "local";
+let SITE_AUTH_TOKEN = null;
+let SITE_USER = null;
+let SITE_PROFILE = null;
+let OFFICIAL_STANDINGS = [];
+let OFFICIAL_SITE_PROMISE = null;
+
+function getSiteTelegramWebApp() {
+  try {
+    if (
+      window.Telegram &&
+      window.Telegram.WebApp &&
+      window.Telegram.WebApp.initData
+    ) {
+      return window.Telegram.WebApp;
+    }
+  } catch (e) {}
+
+  return null;
+}
+
+async function siteOfficialApi(
+  path,
+  options = {}
+) {
+  if (!OFFICIAL_API_BASE) {
+    throw new Error(
+      "Official API is not configured"
+    );
+  }
+
+  const method =
+    options.method || "GET";
+
+  const headers = {
+    ...(SITE_AUTH_TOKEN
+      ? {
+          Authorization:
+            "Bearer " + SITE_AUTH_TOKEN
+        }
+      : {})
+  };
+
+  let body;
+
+  if (options.body !== undefined) {
+    headers["Content-Type"] =
+      "application/json";
+
+    body = JSON.stringify(
+      options.body
+    );
+  }
+
+  const response = await fetch(
+    OFFICIAL_API_BASE + path,
+    {
+      method,
+      headers,
+      body
+    }
+  );
+
+  const json = await response
+    .json()
+    .catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      json.error ||
+      "Official server request failed (" +
+        response.status +
+        ")"
+    );
+  }
+
+  return json;
+}
+
+async function initializeOfficialSite() {
+  const tg =
+    getSiteTelegramWebApp();
+
+  if (
+    !tg ||
+    !tg.initData ||
+    !OFFICIAL_API_BASE
+  ) {
+    SITE_MODE = "local";
+    return false;
+  }
+
+  try {
+    tg.ready();
+    tg.expand();
+
+    const login =
+      await siteOfficialApi(
+        "/api/auth/telegram/dazilla",
+        {
+          method: "POST",
+          body: {
+            initData: tg.initData
+          }
+        }
+      );
+
+    SITE_AUTH_TOKEN =
+      login.token;
+
+    SITE_USER =
+      login.user;
+
+    const locker =
+      await siteOfficialApi(
+        "/api/dazilla/loadout"
+      );
+
+    SITE_PROFILE =
+      locker.profile || null;
+
+    OFFICIAL_STANDINGS =
+      Array.isArray(
+        locker.standings
+      )
+        ? locker.standings
+        : [];
+
+    if (
+      locker.loadout &&
+      typeof locker.loadout ===
+        "object"
+    ) {
+      Object.assign(
+        LOADOUT,
+        locker.loadout
+      );
+
+      saveLoadout();
+    }
+
+    if (SITE_PROFILE) {
+      localStorage.setItem(
+        "dt_xp",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.xp
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_best",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bestScore
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_globalkills",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.kills
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_streak",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.streak
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_lastday",
+        JSON.stringify(
+          String(
+            SITE_PROFILE.lastDay ||
+            ""
+          )
+        )
+      );
+
+      localStorage.setItem(
+        "dt_bestchain",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bestCombo
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_bosses",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bosses
+          ) || 0
+        )
+      );
+    }
+
+    SITE_MODE = "server";
+
+    console.log(
+      "DAZILLA website official mode authenticated"
+    );
+
+    return true;
+
+  } catch (e) {
+    console.warn(
+      "DAZILLA website official login failed:",
+      e
+    );
+
+    SITE_AUTH_TOKEN = null;
+    SITE_USER = null;
+    SITE_PROFILE = null;
+    OFFICIAL_STANDINGS = [];
+    SITE_MODE = "local";
+
+    return false;
+  }
+}
+
+function startOfficialSite() {
+  if (!OFFICIAL_SITE_PROMISE) {
+    OFFICIAL_SITE_PROMISE =
+      initializeOfficialSite();
+  }
+
+  return OFFICIAL_SITE_PROMISE;
+}
+
 const B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 /* ---- balance sources, in order of trust ---- */
@@ -2362,6 +2612,7 @@ if (gl) gl.addEventListener("click", () => {
 /* ============ boot ============ */
 onScroll();
 readRecord();
+startOfficialSite();
 </script>
 </body>
 </html>
