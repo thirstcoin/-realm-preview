@@ -4,9 +4,12 @@
    ============================================================ */
 
 window.DAZILLA_CONFIG = Object.freeze({
-  // Backend API.
-  // Leave blank until the backend is deployed.
+    // Game backend.
+  // Leave blank until DAZILLA score/XP/leaderboard routes are live.
   API_BASE: "",
+
+  // Guardian Registry backend.
+  REGISTRY_API_BASE: "https://toezlandia-ecosystem-api.onrender.com/api/dazilla",
 
   // Solana token mint addresses.
   // TOEZ can be filled as soon as we confirm the real mint.
