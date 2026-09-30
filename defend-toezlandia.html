@@ -2513,7 +2513,7 @@ function drawPlayer() {
 
   const breathe = (pose === "idle" || pose === "victory") ? Math.sin(G.t * .0035) * 2.2 : 0;
   const sq = 1 + p.squash * .16, st = 1 - p.squash * .14;
-  const baseH = 196 * p.scale * (p.scaleFx || 1);
+  const baseH = 216 * p.scale * (p.scaleFx || 1);
   const h = baseH * st, w = baseH * SPR_AR * sq;
   const gy = p.y + 18;                       // ground contact point
   const y = gy - p.air + breathe;
