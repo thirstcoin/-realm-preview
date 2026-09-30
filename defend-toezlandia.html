@@ -3146,9 +3146,9 @@ function endRun() {
   const secs = Math.floor(G.t / 1000);
 
   let xpGain =
-    Math.floor(G.score / 50) +
-    G.wave * 10 +
-    G.bossCount * 40;
+  Math.floor(G.score / 100) +
+  G.wave * 8 +
+  G.bossCount * 30;
 
   let isPB = G.score > REC.best;
 
