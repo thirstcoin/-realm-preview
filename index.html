@@ -2975,10 +2975,51 @@ if (gl) {
   );
 }
 
+/* ============ bot deep links ============ */
+async function handleDazillaDeepLink() {
+  const target =
+    new URLSearchParams(
+      location.search
+    ).get("open");
+
+  if (!target) return;
+
+  if (target === "play") {
+    await openPlay();
+    return;
+  }
+
+  if (target === "locker") {
+    await openLocker();
+    return;
+  }
+
+  if (target === "wallet") {
+    await startOfficialSite();
+
+    const registry =
+      document.getElementById(
+        "registry"
+      );
+
+    if (registry) {
+      registry.scrollIntoView({
+        behavior: REDUCED
+          ? "auto"
+          : "smooth",
+        block: "start"
+      });
+    }
+
+    return;
+  }
+}
+
 /* ============ boot ============ */
 onScroll();
 readRecord();
 startOfficialSite();
+handleDazillaDeepLink();
 </script>
 </body>
 </html>
