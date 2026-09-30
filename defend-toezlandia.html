@@ -3579,8 +3579,14 @@ x.fillText("$TOEZ × $DAZILLA", 52, 660);
 x.font = "bold 24px Trebuchet MS, sans-serif"; x.fillStyle = "#fff";
 x.fillText("PLAY + SAVE YOUR SCORE", 52, 704);
 
-x.font = "bold 23px Trebuchet MS, sans-serif"; x.fillStyle = "#b49ae0";
-x.fillText("@DazillaBot  ·  dazillaz.com", 52, 742);
+x.font = "bold 23px Trebuchet MS, sans-serif";
+
+x.fillStyle = "#ffd76e";
+x.fillText("@DazillaBot", 52, 742);
+
+const botWidth = x.measureText("@DazillaBot").width;
+x.fillStyle = "#b49ae0";
+x.fillText("  ·  dazillaz.com", 52 + botWidth, 742);
 
 const text =
   "I defended Toezlandia — " +
