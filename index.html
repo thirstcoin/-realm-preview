@@ -163,6 +163,10 @@ header.solid{background:rgba(8,3,18,.92);backdrop-filter:blur(10px);
 .navwrap{display:flex;align-items:center}
 .navplay{font-family:var(--display);font-size:14px;letter-spacing:.08em;text-transform:uppercase;
   padding:9px 16px;border-radius:3px;background:var(--accent-2);color:#0d1a02;cursor:pointer;border:0}
+.navplay:disabled{
+  opacity:.58;
+  cursor:wait;
+}
 body[data-realm="toez"] .navplay{color:#2a1300}
 
 /* ============ hero ============ */
