@@ -1084,7 +1084,7 @@ function initMissions() {
   if (!MISSIONS || MISSIONS.day !== t) {
     MISSIONS = { day: t, claimed: false, list: [
       { id: "jeets", label: "Destroy 100 Jeets", need: 100, have: 0 },
-      { id: "time",  label: "Survive 4 minutes", need: 240, have: 0, unit: "s" },
+      { id: "time",  label: "Survive 3 minutes", need: 180, have: 0, unit: "s" },
       { id: "ult",   label: "Use Turdquake 5 times", need: 5, have: 0 }
     ]};
     Store.set("dt_missions", MISSIONS);
@@ -1191,12 +1191,12 @@ const m = profile.missions || {};
         have: Math.max(0, Number(m.jeets) || 0)
       },
       {
-        id: "time",
-        label: "Survive 4 minutes",
-        need: 240,
-        have: Math.max(0, Number(m.survival) || 0),
-        unit: "s"
-      },
+  id: "time",
+  label: "Survive 3 minutes",
+  need: 180,
+  have: Math.max(0, Number(m.survival) || 0),
+  unit: "s"
+},
       {
         id: "ult",
         label: "Use Turdquake 5 times",
