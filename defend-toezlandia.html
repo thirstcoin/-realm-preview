@@ -3571,13 +3571,26 @@ async function shareScore() {
   x.fillText((CREST_GLYPH[COS.crest] || "TZ") + "  " + rankName(guardianLevel(REC.xp)), 56, 530);
   x.fillText("Wave " + G.wave + "  ·  best chain " + G.bestCombo + "×", 56, 496);
   x.font = "52px Impact, 'Arial Black', sans-serif"; x.fillStyle = "#fff";
-  x.fillText("CAN YOU BEAT ME?", 52, 600);
-  x.font = "36px Impact, 'Arial Black', sans-serif"; x.fillStyle = "#f5b301";
-  x.fillText("$TOEZ × $DAZILLA", 52, 680);
-  x.font = "bold 22px Trebuchet MS, sans-serif"; x.fillStyle = "#b49ae0";
-  x.fillText(CONFIG.SITE, 52, 716);
-  const text = "I defended Toezlandia — " + fmt(G.score) + " points, " + fmt(G.kills) +
-               " invaders crushed. Can you beat me? $TOEZ × $DAZILLA " + CONFIG.SITE;
+x.fillText("CAN YOU BEAT ME?", 52, 600);
+
+x.font = "34px Impact, 'Arial Black', sans-serif"; x.fillStyle = "#f5b301";
+x.fillText("$TOEZ × $DAZILLA", 52, 660);
+
+x.font = "bold 24px Trebuchet MS, sans-serif"; x.fillStyle = "#fff";
+x.fillText("PLAY + SAVE YOUR SCORE", 52, 704);
+
+x.font = "bold 23px Trebuchet MS, sans-serif"; x.fillStyle = "#b49ae0";
+x.fillText("@DazillaBot  ·  dazillaz.com", 52, 742);
+
+const text =
+  "I defended Toezlandia — " +
+  fmt(G.score) +
+  " points, " +
+  fmt(G.kills) +
+  " invaders crushed. Can you beat me?\n\n" +
+  "Play + save your score:\n" +
+  "https://t.me/DazillaBot\n\n" +
+  "$TOEZ × $DAZILLA";
   c.toBlob(async blob => {
     const file = new File([blob], "toezlandia-score.png", { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
