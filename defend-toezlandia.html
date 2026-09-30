@@ -3013,10 +3013,34 @@ async function startRun() {
     SFX.unlock();
     initMissions();
 
-    await startGameMode();
+    const officialReady =
+  await startGameMode();
 
-    /*
-     * If we successfully authenticated as an official
+const tg =
+  getTelegramWebApp();
+
+/*
+ * If this game was launched through Telegram,
+ * never silently fall back to an unsaved preview
+ * run when official authentication is unavailable.
+ *
+ * Normal browser play remains preview mode.
+ */
+if (
+  tg &&
+  tg.initData &&
+  CONFIG.OFFICIAL_API_BASE &&
+  !officialReady
+) {
+  toast(
+    "Official login unavailable · try again"
+  );
+
+  return;
+}
+
+/*
+ * If we successfully authenticated as an official
      * Telegram player, an official run ID is required
      * before gameplay begins.
      *
