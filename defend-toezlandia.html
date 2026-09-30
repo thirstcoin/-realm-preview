@@ -1286,7 +1286,7 @@ function newGame() {
 function buildWave(n) {
   const q = [];
   const push = (type, count, gap, delay) => { for (let i = 0; i < count; i++) q.push({ type, t: (delay || 0) + i * gap }); };
-  const s = Math.max(0, n - 4), hpMult = 1 + s * 0.16, isBoss = n % 5 === 0;
+  const s = Math.max(0, n - 4), hpMult = 1 + s * 0.20, isBoss = n % 5 === 0;
   if (n === 1) push("jeet", 8, 620);
   else if (n === 2) { push("jeet", 8, 560); push("bot", 6, 340, 1400); }
   else if (n === 3) { push("jeet", 9, 500); push("bot", 6, 320, 900); push("fudder", 3, 1500, 2200); }
@@ -1367,7 +1367,7 @@ function updateSequence(dt) {
   }
 }
 function spawnBoss() {
-  const n = G.bossCount + 1, hp = 620 * (1 + .55 * (n - 1));
+  const n = G.bossCount + 1, hp = 620 * (1 + .65 * (n - 1));
   G.boss = { type: "boss", x: W / 2, y: H + 120, r: 54, hp, maxhp: hp, spd: .55,
              panic: false, throwT: 2600, summonT: 3800, hurt: 0, kb: 0, kbx: 0, kby: 0,
              wob: 0, step: 0, intro: 1 };
