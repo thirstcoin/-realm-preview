@@ -477,7 +477,38 @@ adoptOfficialProfile(SERVER_PROFILE);
   }
 }
 
-const GAME_MODE_PROMISE = initializeGameMode();
+let GAME_MODE_PROMISE =
+  initializeGameMode();
+
+async function startGameMode() {
+  let ok =
+    await GAME_MODE_PROMISE;
+
+  const tg =
+    getTelegramWebApp();
+
+  /*
+   * The game authenticates independently from the
+   * parent website. If its first Telegram/backend
+   * attempt failed, retry on the next player action.
+   *
+   * Normal browser preview mode does not retry.
+   */
+  if (
+    !ok &&
+    tg &&
+    tg.initData &&
+    CONFIG.OFFICIAL_API_BASE
+  ) {
+    GAME_MODE_PROMISE =
+      initializeGameMode();
+
+    ok =
+      await GAME_MODE_PROMISE;
+  }
+
+  return ok;
+}
 
 /* ---------------- sfx ---------------- */
 const SFX = (() => {
@@ -2968,7 +2999,7 @@ async function startRun() {
   SFX.unlock();
   initMissions();
 
-  await GAME_MODE_PROMISE;
+  await startGameMode();
 
   OFFICIAL_RUN_ID = null;
 
@@ -3446,7 +3477,7 @@ async function shareScore() {
 
 /* ---------------- wiring ---------------- */
 el("playBtn").addEventListener("click", async () => {
-  await GAME_MODE_PROMISE;
+  await startGameMode();
 
   if (
     MODE !== "server" &&
