@@ -341,6 +341,7 @@ let MODE_READY = false;
 
 let OFFICIAL_RUN_ID = null;
 let RUN_STARTING = false;
+let RUN_FINISHING = false;
 
 function getTelegramWebApp() {
   try {
@@ -2992,7 +2993,18 @@ function toast(msg) {
 }
 
 async function startRun() {
-  if (RUN_STARTING) return;
+  if (
+    RUN_STARTING ||
+    RUN_FINISHING
+  ) {
+    if (RUN_FINISHING) {
+      toast(
+        "Saving official run…"
+      );
+    }
+
+    return;
+  }
 
   RUN_STARTING = true;
   OFFICIAL_RUN_ID = null;
@@ -3149,7 +3161,16 @@ function endRun() {
   OFFICIAL_RUN_ID = null;
 
   if (official) {
-    const payload = {
+  RUN_FINISHING = true;
+
+  const againBtn =
+    el("againBtn");
+
+  againBtn.disabled = true;
+  againBtn.textContent =
+    "Saving…";
+
+  const payload = {
       runId,
       durationSec: secs,
       score: Math.floor(G.score),
@@ -3204,7 +3225,7 @@ function endRun() {
           " XP"
         );
       })
-      .catch(e => {
+            .catch(e => {
         console.warn(
           "Official DAZILLA run rejected:",
           e
@@ -3214,6 +3235,16 @@ function endRun() {
           "Official run not saved · " +
           e.message
         );
+      })
+      .finally(() => {
+        RUN_FINISHING = false;
+
+        const againBtn =
+          el("againBtn");
+
+        againBtn.disabled = false;
+        againBtn.textContent =
+          "Play again";
       });
 
   } else {
