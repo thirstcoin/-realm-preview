@@ -619,53 +619,133 @@ function drawSkinCosmetic(w, h) {
     }
 
   } else if (skin === "skin_gilded") {
-  const s = scale || 1;
 
-  function drawGoldPlate(px, py, w2, h2, rot = 0) {
-    ctx.save();
-    ctx.translate(x + px * s, y + py * s);
-    ctx.rotate(rot);
+    function plate(
+      px,
+      py,
+      pw,
+      ph,
+      rot
+    ) {
+      ctx.save();
 
-    ctx.shadowColor = "rgba(255, 210, 90, 0.35)";
-    ctx.shadowBlur = 8 * s;
+      ctx.translate(px, py);
+      ctx.rotate(rot || 0);
 
-    ctx.fillStyle = "#f3c547";
-    ctx.strokeStyle = "#8a5d12";
-    ctx.lineWidth = 1.5 * s;
-    ctx.lineJoin = "round";
+      const gold =
+        ctx.createLinearGradient(
+          -pw / 2,
+          -ph / 2,
+          pw / 2,
+          ph / 2
+        );
 
-    ctx.beginPath();
-    ctx.moveTo((-w2 * 0.55) * s, 0);
-    ctx.lineTo((-w2 * 0.2) * s, (-h2 * 0.5) * s);
-    ctx.lineTo((w2 * 0.3) * s, (-h2 * 0.42) * s);
-    ctx.lineTo((w2 * 0.52) * s, 0);
-    ctx.lineTo((w2 * 0.2) * s, (h2 * 0.5) * s);
-    ctx.lineTo((-w2 * 0.28) * s, (h2 * 0.42) * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+      gold.addColorStop(
+        0,
+        "#fff0a8"
+      );
 
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = "rgba(255, 245, 190, 0.75)";
-    ctx.lineWidth = 0.9 * s;
+      gold.addColorStop(
+        .45,
+        "#f5c542"
+      );
 
-    ctx.beginPath();
-    ctx.moveTo((-w2 * 0.18) * s, (-h2 * 0.2) * s);
-    ctx.lineTo((w2 * 0.18) * s, (-h2 * 0.2) * s);
-    ctx.stroke();
+      gold.addColorStop(
+        1,
+        "#a96b0b"
+      );
 
-    ctx.restore();
-  }
+      ctx.fillStyle = gold;
+      ctx.strokeStyle =
+        "rgba(255,225,120,.9)";
 
-  drawGoldPlate(-13, -24, 12, 8, -0.9);
-  drawGoldPlate(-6, -16, 14, 9, -0.55);
-  drawGoldPlate(4, -9, 14, 8, -0.2);
-  drawGoldPlate(13, -1, 12, 7, 0.08);
+      ctx.lineWidth = 1.5;
 
-  drawGoldPlate(-7, -2, 9, 6, -0.2);
-  drawGoldPlate(5, 1, 9, 6, 0.18);
-  drawGoldPlate(0, 9, 12, 6, 0.04);
-}
+      ctx.shadowColor =
+        "rgba(245,179,1,.35)";
+
+      ctx.shadowBlur = 5;
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        -pw * .48,
+        0
+      );
+
+      ctx.lineTo(
+        -pw * .22,
+        -ph * .48
+      );
+
+      ctx.lineTo(
+        pw * .28,
+        -ph * .42
+      );
+
+      ctx.lineTo(
+        pw * .5,
+        0
+      );
+
+      ctx.lineTo(
+        pw * .18,
+        ph * .46
+      );
+
+      ctx.lineTo(
+        -pw * .28,
+        ph * .4
+      );
+
+      ctx.closePath();
+
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // Small fitted armor accents across the upper back/shoulder.
+    plate(
+      -w * .18,
+      -h * .59,
+      w * .13,
+      h * .055,
+      -.45
+    );
+
+    plate(
+      -w * .11,
+      -h * .52,
+      w * .145,
+      h * .06,
+      -.28
+    );
+
+    plate(
+      -w * .04,
+      -h * .45,
+      w * .15,
+      h * .062,
+      -.12
+    );
+
+    plate(
+      w * .04,
+      -h * .38,
+      w * .14,
+      h * .058,
+      .08
+    );
+
+    plate(
+      w * .10,
+      -h * .30,
+      w * .12,
+      h * .052,
+      .22
+    );
 
   } else if (
     skin === "skin_scarred"
@@ -678,7 +758,8 @@ function drawSkinCosmetic(w, h) {
 
     for (let i = 0; i < 3; i++) {
       const x =
-        -w * .13 + i * w * .11;
+        -w * .13 +
+        i * w * .11;
 
       ctx.beginPath();
 
