@@ -618,43 +618,54 @@ function drawSkinCosmetic(w, h) {
       ctx.stroke();
     }
 
-  } else if (
-    skin === "skin_gilded"
-  ) {
-    ctx.strokeStyle =
-      "rgba(255,215,110,.95)";
+  } else if (skin === "skin_gilded") {
+  const s = scale || 1;
 
-    ctx.shadowColor =
-      "#f5b301";
+  function drawGoldPlate(px, py, w2, h2, rot = 0) {
+    ctx.save();
+    ctx.translate(x + px * s, y + py * s);
+    ctx.rotate(rot);
 
-    ctx.shadowBlur = 10;
-    ctx.lineWidth = 5;
+    ctx.shadowColor = "rgba(255, 210, 90, 0.35)";
+    ctx.shadowBlur = 8 * s;
 
-    for (const side of [-1, 1]) {
-      ctx.beginPath();
+    ctx.fillStyle = "#f3c547";
+    ctx.strokeStyle = "#8a5d12";
+    ctx.lineWidth = 1.5 * s;
+    ctx.lineJoin = "round";
 
-      ctx.arc(
-        side * w * .18,
-        -h * .53,
-        w * .12,
-        Math.PI * .15,
-        Math.PI * .85
-      );
+    ctx.beginPath();
+    ctx.moveTo((-w2 * 0.55) * s, 0);
+    ctx.lineTo((-w2 * 0.2) * s, (-h2 * 0.5) * s);
+    ctx.lineTo((w2 * 0.3) * s, (-h2 * 0.42) * s);
+    ctx.lineTo((w2 * 0.52) * s, 0);
+    ctx.lineTo((w2 * 0.2) * s, (h2 * 0.5) * s);
+    ctx.lineTo((-w2 * 0.28) * s, (h2 * 0.42) * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
 
-      ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = "rgba(255, 245, 190, 0.75)";
+    ctx.lineWidth = 0.9 * s;
 
-      ctx.beginPath();
+    ctx.beginPath();
+    ctx.moveTo((-w2 * 0.18) * s, (-h2 * 0.2) * s);
+    ctx.lineTo((w2 * 0.18) * s, (-h2 * 0.2) * s);
+    ctx.stroke();
 
-      ctx.arc(
-        side * w * .15,
-        -h * .36,
-        w * .10,
-        Math.PI * .15,
-        Math.PI * .85
-      );
+    ctx.restore();
+  }
 
-      ctx.stroke();
-    }
+  drawGoldPlate(-13, -24, 12, 8, -0.9);
+  drawGoldPlate(-6, -16, 14, 9, -0.55);
+  drawGoldPlate(4, -9, 14, 8, -0.2);
+  drawGoldPlate(13, -1, 12, 7, 0.08);
+
+  drawGoldPlate(-7, -2, 9, 6, -0.2);
+  drawGoldPlate(5, 1, 9, 6, 0.18);
+  drawGoldPlate(0, 9, 12, 6, 0.04);
+}
 
   } else if (
     skin === "skin_scarred"
