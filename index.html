@@ -2388,13 +2388,26 @@ console.log(
   }
 }
 
-function startOfficialSite() {
+async function startOfficialSite() {
   if (!OFFICIAL_SITE_PROMISE) {
     OFFICIAL_SITE_PROMISE =
       initializeOfficialSite();
   }
 
-  return OFFICIAL_SITE_PROMISE;
+  const ok =
+    await OFFICIAL_SITE_PROMISE;
+
+  /*
+   * If official auth failed because Telegram or the
+   * network hiccupped, allow the next user action to
+   * try again instead of being stuck in local mode
+   * until the Mini App is fully reloaded.
+   */
+  if (!ok) {
+    OFFICIAL_SITE_PROMISE = null;
+  }
+
+  return ok;
 }
 
 async function saveOfficialLoadout() {
