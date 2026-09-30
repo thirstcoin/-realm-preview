@@ -2995,51 +2995,91 @@ async function startRun() {
   if (RUN_STARTING) return;
 
   RUN_STARTING = true;
-
-  SFX.unlock();
-  initMissions();
-
-  await startGameMode();
-
   OFFICIAL_RUN_ID = null;
 
-  if (MODE === "server") {
-    try {
-      const started = await officialApi(
-        "/api/dazilla/run/start",
-        {
-          method: "POST",
-          body: {
-            season: CONFIG.SEASON
-          }
+  try {
+    SFX.unlock();
+    initMissions();
+
+    await startGameMode();
+
+    /*
+     * If we successfully authenticated as an official
+     * Telegram player, an official run ID is required
+     * before gameplay begins.
+     *
+     * Never silently turn an official attempt into a
+     * preview run if the backend run-start request fails.
+     */
+    if (MODE === "server") {
+      try {
+        const started =
+          await officialApi(
+            "/api/dazilla/run/start",
+            {
+              method: "POST",
+              body: {
+                season: CONFIG.SEASON
+              }
+            }
+          );
+
+        if (
+          !started ||
+          !started.runId
+        ) {
+          throw new Error(
+            "Official run ID was not returned"
+          );
         }
-      );
 
-      OFFICIAL_RUN_ID = started.runId;
+        OFFICIAL_RUN_ID =
+          started.runId;
 
-    } catch (e) {
-      console.warn(
-        "Official DAZILLA run could not start:",
-        e
-      );
+      } catch (e) {
+        console.warn(
+          "Official DAZILLA run could not start:",
+          e
+        );
 
-      toast(
-        "Official server unavailable · preview run"
-      );
+        OFFICIAL_RUN_ID = null;
+
+        toast(
+          "Official run could not start · try again"
+        );
+
+        return;
+      }
     }
+
+    G = newGame();
+    G.running = true;
+
+    hideAllPanels();
+
+    el("bosswrap")
+      .classList
+      .remove("on");
+
+    startWave(1);
+    updHud();
+    playEntrance();
+
+  } catch (e) {
+    console.warn(
+      "DAZILLA run start failed:",
+      e
+    );
+
+    OFFICIAL_RUN_ID = null;
+
+    toast(
+      "Run could not start · try again"
+    );
+
+  } finally {
+    RUN_STARTING = false;
   }
-
-  G = newGame();
-  G.running = true;
-
-  hideAllPanels();
-  el("bosswrap").classList.remove("on");
-
-  startWave(1);
-  updHud();
-  playEntrance();
-
-  RUN_STARTING = false;
 }
 
 function playEntrance() {
