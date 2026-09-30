@@ -1439,7 +1439,15 @@ function zoomPunch(z, ret) {
 }
 
 /* ---------------- combat ---------------- */
-function damageEnemy(e, amount, kbForce, fromX, fromY, launch) {
+function damageEnemy(
+  e,
+  amount,
+  kbForce,
+  fromX,
+  fromY,
+  launch,
+  noUltCharge = false
+) {
   e.hp -= amount; e.hurt = 150;
   if (kbForce) {
     const a = Math.atan2(e.y - fromY, e.x - fromX);
@@ -1447,7 +1455,14 @@ function damageEnemy(e, amount, kbForce, fromX, fromY, launch) {
     e.kby = Math.sin(a) * kbForce * G.player.kbMult;
     e.kb = 240;
   }
-  G.player.ult = Math.min(G.player.ultMax, G.player.ult + amount * .13 * G.player.ultGain);
+  if (!noUltCharge) {
+  G.player.ult = Math.min(
+    G.player.ultMax,
+    G.player.ult +
+      amount * .13 *
+      G.player.ultGain
+  );
+}
   if (e.hp <= 0) {
     if (e.type === "boss") e.dead = true;      // boss death is resolved in update()
     else killEnemy(e, launch, fromX, fromY);
@@ -1590,7 +1605,17 @@ function quakeImpact() {
   }
   for (const e of allEnemies()) {
     if (e.dead) continue;
-    if (dist(e, p) < 560) damageEnemy(e, e.type === "boss" ? 230 : 9999, 20, p.x, p.y, true);
+    if (dist(e, p) < 560) {
+  damageEnemy(
+    e,
+    e.type === "boss" ? 230 : 9999,
+    20,
+    p.x,
+    p.y,
+    true,
+    true
+  );
+}
   }
   G.shots.length = 0;
   if (p.aftershock) setTimeout(() => { if (G && G.running) aftershock(); }, 420);
@@ -1601,7 +1626,17 @@ function aftershock() {
   shake(12); SFX.ultHit();
   for (const e of allEnemies()) {
     if (e.dead) continue;
-    if (dist(e, p) < 460) damageEnemy(e, e.type === "boss" ? 120 : 9999, 16, p.x, p.y, true);
+    if (dist(e, p) < 460) {
+  damageEnemy(
+    e,
+    e.type === "boss" ? 120 : 9999,
+    16,
+    p.x,
+    p.y,
+    true,
+    true
+  );
+}
   }
 }
 
