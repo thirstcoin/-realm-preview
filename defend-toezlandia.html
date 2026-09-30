@@ -1218,32 +1218,259 @@ const RARITY = {
   legend: { w: 2,  label: "Legendary", cls: "r-legend" }
 };
 const UPGRADES = [
-  { id:"dmg",   r:"common", ico:"👊", t:"Heavy hands",       d:"+20% attack damage",              fn:p=>p.dmg*=1.20 },
-  { id:"hp",    r:"common", ico:"🛡️", t:"Thicker than ever", d:"+20% max health, heal a chunk",   fn:p=>{p.maxhp*=1.2;p.hp=Math.min(p.maxhp,p.hp+p.maxhp*.25);} },
-  { id:"speed", r:"common", ico:"💨", t:"Big zilla energy",  d:"+15% movement speed",             fn:p=>p.speed*=1.15 },
-  { id:"rate",  r:"common", ico:"⚡", t:"Fast swipes",       d:"+15% attack speed",               fn:p=>p.atkRate*=.85 },
-  { id:"range", r:"common", ico:"📏", t:"Long reach",        d:"+18% attack range",               fn:p=>p.atkRange*=1.18 },
-  { id:"tail",  r:"rare",   ico:"🦎", t:"Tail gains",        d:"Tail whip triggers more often",   fn:p=>p.tailEvery=Math.max(2,p.tailEvery-1) },
-  { id:"realm", r:"rare",   ico:"🏰", t:"Realm defender",    d:"Castle takes 15% less damage",    fn:p=>p.realmArmor*=.85 },
-  { id:"ultg",  r:"rare",   ico:"🌊", t:"Full send",         d:"Turdquake charges 20% faster",    fn:p=>p.ultGain*=1.20 },
-  { id:"dodge", r:"rare",   ico:"🌀", t:"Slippery zilla",    d:"Dodge cooldown -25%",             fn:p=>p.dodgeMax*=.75 },
-  { id:"kb",    r:"rare",   ico:"💥", t:"Concussive",        d:"+60% knockback on every hit",     fn:p=>p.kbMult*=1.6 },
-  { id:"leech", r:"epic",   ico:"🩸", t:"Realm siphon",      d:"Every 12th kill repairs the realm 1%", fn:p=>p.leech=true },
-  { id:"thorn", r:"epic",   ico:"🌵", t:"Spiked hide",       d:"Enemies that touch you take damage",   fn:p=>p.thorns+=14 },
-  { id:"quake2",r:"epic",   ico:"☄️", t:"Aftershock",        d:"Turdquake fires a second wave",   fn:p=>p.aftershock=true },
-  { id:"unit",  r:"legend", ico:"🦖", t:"Absolute unit",     d:"Turdzilla doubles in size. +50% damage. −15% speed.", fn:p=>{p.scale*=1.9;p.r*=1.7;p.dmg*=1.5;p.speed*=.85;p.atkRange*=1.25;} },
-  { id:"gold",  r:"legend", ico:"👑", t:"Crowned in gold",   d:"Every kill scores double. Chain never drops below 2×.", fn:p=>{p.goldMult=2;p.minMult=2;} },
-  { id:"portal",r:"legend", ico:"🌌", t:"Gate keeper",       d:"Invaders that reach the gates are hurled back once each.", fn:p=>p.gatekeep=true }
-];
-function rollUpgrades() {
-  const bag = [];
-  for (const u of UPGRADES) for (let i = 0; i < RARITY[u.r].w; i++) bag.push(u);
-  const out = [];
-  let guard = 0;
-  while (out.length < 3 && guard++ < 400) {
-    const u = pick(bag);
-    if (!out.includes(u) && !(G.taken.includes(u.id) && u.r === "legend")) out.push(u);
+  {
+    id:"dmg",
+    r:"common",
+    maxStacks:6,
+    ico:"👊",
+    t:"Heavy hands",
+    d:"+20% attack damage",
+    fn:p=>p.dmg*=1.20
+  },
+  {
+    id:"hp",
+    r:"common",
+    maxStacks:5,
+    ico:"🛡️",
+    t:"Thicker than ever",
+    d:"+20% max health, heal a chunk",
+    fn:p=>{
+      p.maxhp*=1.20;
+      p.hp=Math.min(
+        p.maxhp,
+        p.hp+p.maxhp*.25
+      );
+    }
+  },
+  {
+    id:"speed",
+    r:"common",
+    maxStacks:4,
+    ico:"💨",
+    t:"Big zilla energy",
+    d:"+15% movement speed",
+    fn:p=>p.speed*=1.15
+  },
+  {
+    id:"rate",
+    r:"common",
+    maxStacks:5,
+    ico:"⚡",
+    t:"Fast swipes",
+    d:"+15% attack speed",
+    fn:p=>p.atkRate*=.85
+  },
+  {
+    id:"range",
+    r:"common",
+    maxStacks:4,
+    ico:"📏",
+    t:"Long reach",
+    d:"+18% attack range",
+    fn:p=>p.atkRange*=1.18
+  },
+
+  {
+    id:"tail",
+    r:"rare",
+    maxStacks:3,
+    ico:"🦎",
+    t:"Tail gains",
+    d:"Tail whip triggers more often",
+    fn:p=>
+      p.tailEvery=
+        Math.max(
+          2,
+          p.tailEvery-1
+        )
+  },
+  {
+    id:"realm",
+    r:"rare",
+    maxStacks:4,
+    ico:"🏰",
+    t:"Realm defender",
+    d:"Castle takes 15% less damage",
+    fn:p=>p.realmArmor*=.85
+  },
+  {
+    id:"ultg",
+    r:"rare",
+    maxStacks:4,
+    ico:"🌊",
+    t:"Full send",
+    d:"Turdquake charges 20% faster",
+    fn:p=>p.ultGain*=1.20
+  },
+  {
+    id:"dodge",
+    r:"rare",
+    maxStacks:3,
+    ico:"🌀",
+    t:"Slippery zilla",
+    d:"Dodge cooldown -25%",
+    fn:p=>p.dodgeMax*=.75
+  },
+  {
+    id:"kb",
+    r:"rare",
+    maxStacks:3,
+    ico:"💥",
+    t:"Concussive",
+    d:"+60% knockback on every hit",
+    fn:p=>p.kbMult*=1.6
+  },
+
+  {
+    id:"leech",
+    r:"epic",
+    maxStacks:1,
+    ico:"🩸",
+    t:"Realm siphon",
+    d:"Every 12th kill repairs the realm 1%",
+    fn:p=>p.leech=true
+  },
+  {
+    id:"thorn",
+    r:"epic",
+    maxStacks:3,
+    ico:"🌵",
+    t:"Spiked hide",
+    d:"Enemies that touch you take damage",
+    fn:p=>p.thorns+=14
+  },
+  {
+    id:"quake2",
+    r:"epic",
+    maxStacks:1,
+    ico:"☄️",
+    t:"Aftershock",
+    d:"Turdquake fires a second wave",
+    fn:p=>p.aftershock=true
+  },
+
+  {
+    id:"unit",
+    r:"legend",
+    maxStacks:1,
+    ico:"🦖",
+    t:"Absolute unit",
+    d:"Turdzilla doubles in size. +50% damage. −15% speed.",
+    fn:p=>{
+      p.scale*=1.9;
+      p.r*=1.7;
+      p.dmg*=1.5;
+      p.speed*=.85;
+      p.atkRange*=1.25;
+    }
+  },
+  {
+    id:"gold",
+    r:"legend",
+    maxStacks:1,
+    ico:"👑",
+    t:"Crowned in gold",
+    d:"Every kill scores double. Chain never drops below 2×.",
+    fn:p=>{
+      p.goldMult=2;
+      p.minMult=2;
+    }
+  },
+  {
+    id:"portal",
+    r:"legend",
+    maxStacks:1,
+    ico:"🌌",
+    t:"Gate keeper",
+    d:"Invaders that reach the gates are hurled back once each.",
+    fn:p=>p.gatekeep=true
   }
+];
+
+function upgradeStacks(id) {
+  let count=0;
+
+  for(const taken of G.taken){
+    if(taken===id){
+      count++;
+    }
+  }
+
+  return count;
+}
+
+function upgradeAvailable(u) {
+  return (
+    upgradeStacks(u.id) <
+    u.maxStacks
+  );
+}
+
+function rollUpgrades() {
+  const eligible=
+    UPGRADES.filter(
+      upgradeAvailable
+    );
+
+  /*
+   * Extremely long runs can eventually exhaust every
+   * permanent upgrade. Never leave the player trapped
+   * on an empty upgrade screen.
+   */
+  if(!eligible.length){
+    return [{
+      id:"breather",
+      r:"common",
+      maxStacks:
+        Number.MAX_SAFE_INTEGER,
+      ico:"❤️",
+      t:"Catch your breath",
+      d:"Recover 35% health",
+      fn:p=>{
+        p.hp=Math.min(
+          p.maxhp,
+          p.hp+
+            p.maxhp*.35
+        );
+      }
+    }];
+  }
+
+  const bag=[];
+
+  for(const u of eligible){
+    for(
+      let i=0;
+      i<RARITY[u.r].w;
+      i++
+    ){
+      bag.push(u);
+    }
+  }
+
+  const out=[];
+
+  const wanted=Math.min(
+    3,
+    eligible.length
+  );
+
+  let guard=0;
+
+  while(
+    out.length<wanted &&
+    guard++<400
+  ){
+    const u=pick(bag);
+
+    if(
+      u &&
+      !out.includes(u)
+    ){
+      out.push(u);
+    }
+  }
+
   return out;
 }
 
