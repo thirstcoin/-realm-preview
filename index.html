@@ -1545,7 +1545,30 @@ function closePlay() {
     toast("Back in Toezlandia");
   }
 }
-$$("[data-play]").forEach(b => b.addEventListener("click", () => { SND.power(); openPlay(); }));
+$$("[data-play]").forEach(b => {
+  b.addEventListener(
+    "click",
+    async () => {
+      if (b.disabled) return;
+
+      const originalText =
+        b.textContent;
+
+      b.disabled = true;
+      b.textContent = "Loading…";
+
+      SND.power();
+
+      try {
+        await openPlay();
+      } finally {
+        b.disabled = false;
+        b.textContent =
+          originalText;
+      }
+    }
+  );
+});
 $("#playClose").addEventListener("click", closePlay);
 addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
