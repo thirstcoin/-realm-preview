@@ -1,0 +1,3025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TURDZILLA &amp; THE ZILLAZ — Guardians of Toezlandia</title>
+<meta name="description" content="Two realms. One alliance. Turdzilla came through the Interdimensional Gateway to defend Toezlandia. Meet the Zillaz, face the invaders, and defend the realm yourself.">
+<meta name="theme-color" content="#07030d">
+<meta property="og:title" content="TURDZILLA &amp; THE ZILLAZ">
+<meta property="og:description" content="Toezlandia calls. The Zillaz answer. $TOEZ × $DAZILLA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="config.js"></script>
+
+<style>
+/* ============ tokens ============ */
+:root{
+  --void:#07030d;
+  --zilla-1:#1c0c31; --zilla-2:#0b0518;
+  --royal-1:#2c1157; --royal-2:#140724;
+  --arc:#b14aff; --toxic:#7fff2a;
+  --gold:#f5b301; --gold-2:#ffd76e;
+  --ink:#ece4ff; --dim:#a891d4;
+  --accent:var(--arc); --accent-2:var(--toxic);
+  --bg-1:var(--zilla-1); --bg-2:var(--zilla-2);
+  --display:'Anton',Impact,'Arial Narrow Bold',sans-serif;
+  --royal:'Cinzel',Georgia,'Times New Roman',serif;
+  --body:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;
+  --pad:clamp(18px,5vw,44px);
+  --maxw:1120px;
+}
+body[data-realm="toez"]{
+  --accent:var(--gold); --accent-2:var(--gold-2);
+  --bg-1:var(--royal-1); --bg-2:var(--royal-2);
+  --ink:#fff4dc; --dim:#d9bd85;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void); color:var(--ink); font-family:var(--body);
+  overflow-x:hidden; line-height:1.6;
+  transition:color .9s ease;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ============ background layers ============ */
+#realmwash{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 70% at 50% -10%, var(--bg-1) 0%, transparent 62%),
+    radial-gradient(90% 60% at 12% 40%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 60%),
+    radial-gradient(80% 55% at 88% 78%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 58%),
+    linear-gradient(180deg, var(--bg-2), var(--void));
+  transition:background 1.1s ease;
+}
+#atmos{position:fixed;inset:0;z-index:1;pointer-events:none}
+#drift{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+/* zilla-realm instability: scanlines + a rare chromatic tear */
+#glitch{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;
+  mix-blend-mode:screen;transition:opacity .9s ease;
+  background:repeating-linear-gradient(180deg,rgba(177,74,255,.05) 0 1px,transparent 1px 3px)}
+body[data-realm="zilla"] #glitch{opacity:.5}
+#glitch.tear{opacity:.95;transform:translateX(2px);
+  background:
+    repeating-linear-gradient(180deg,rgba(127,255,42,.10) 0 1px,transparent 1px 3px),
+    linear-gradient(90deg,rgba(255,0,90,.10),transparent 12%,transparent 88%,rgba(0,220,255,.10));
+  transition:none}
+/* realm lightning / gate flare */
+#lightflash{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;
+  background:radial-gradient(120% 80% at 50% 20%, rgba(214,170,255,.55), transparent 60%)}
+#lightflash.on{animation:flashOut .5s ease-out}
+@keyframes flashOut{0%{opacity:.85}100%{opacity:0}}
+.dr{position:absolute;top:0;left:0;will-change:transform,opacity;
+  font-size:34px;line-height:1;user-select:none;filter:blur(.2px);
+  transition:opacity .8s ease}
+.dr.tz{font-family:var(--display);font-size:26px;letter-spacing:.06em;
+  color:var(--accent);border:2px solid var(--accent);border-radius:6px;padding:2px 7px}
+#vig{position:fixed;inset:0;z-index:5;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 45%, transparent 45%, rgba(4,1,10,.72) 100%)}
+main,header,footer{position:relative;z-index:6}
+
+/* ============ shared ============ */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+section{padding:clamp(72px,14vw,140px) 0;position:relative}
+.marker{font-family:var(--body);font-size:11px;letter-spacing:.36em;text-transform:uppercase;
+  color:var(--accent);opacity:.9;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.marker::before{content:"";width:26px;height:2px;background:var(--accent);flex:none}
+h2{font-family:var(--display);font-size:clamp(38px,10vw,74px);line-height:.92;
+  text-transform:uppercase;letter-spacing:.01em}
+body[data-realm="toez"] h2{font-family:var(--royal);font-weight:800;letter-spacing:-.01em;
+  font-size:clamp(32px,8.4vw,64px)}
+h3{font-family:var(--display);font-size:clamp(22px,5vw,30px);text-transform:uppercase;line-height:1}
+.lede{font-size:clamp(16px,4vw,19px);color:var(--dim);max-width:56ch;margin-top:16px}
+.tiny{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+
+.btn.charge{position:relative;overflow:hidden}
+.btn.charge::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%);
+  transform:translateX(-120%);animation:glint 3.6s ease-in-out infinite}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--display);font-size:19px;letter-spacing:.05em;text-transform:uppercase;
+  padding:15px 30px;border:0;border-radius:4px;cursor:pointer;
+  background:linear-gradient(180deg,var(--gold-2),#dd9500);color:#2a1300;
+  box-shadow:0 5px 0 #7a4d00, 0 0 34px color-mix(in srgb,var(--gold) 34%,transparent);
+  transition:transform .12s ease, box-shadow .12s ease}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #7a4d00}
+
+.btn:disabled{
+  opacity:.58;
+  cursor:wait;
+  transform:none;
+  box-shadow:0 2px 0 #7a4d00;
+}
+
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid color-mix(in srgb,var(--accent) 60%,transparent);
+  box-shadow:none;font-size:15px;padding:12px 22px}
+.btn.ghost:active{transform:translateY(2px);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+
+/* headlines arrive with weight */
+.wd{display:inline-block;opacity:0;transform:translateY(.5em) scale(1.12);
+  filter:blur(6px);transition:opacity .5s ease, transform .55s cubic-bezier(.2,1.1,.3,1), filter .5s ease}
+.in .wd{opacity:1;transform:none;filter:none}
+
+/* thin light sweep marking a new chapter */
+.edge{position:absolute;top:0;left:0;right:0;height:1px;overflow:visible;pointer-events:none}
+.edge::before{content:"";position:absolute;top:0;left:-30%;width:30%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  box-shadow:0 0 18px var(--accent)}
+.edge.go::before{animation:sweep 1.5s cubic-bezier(.3,.6,.2,1) forwards}
+@keyframes sweep{to{left:100%}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv.l{transform:translateX(-40px)} .rv.r{transform:translateX(40px)}
+.rv.l.in,.rv.r.in{transform:none}
+
+/* ============ header ============ */
+header{position:fixed;top:0;left:0;right:0;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px var(--pad);
+  background:linear-gradient(180deg,rgba(6,2,14,.9),rgba(6,2,14,0));
+  transition:background .4s ease}
+header.solid{background:rgba(8,3,18,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 24%,transparent)}
+.brand{font-family:var(--display);font-size:19px;letter-spacing:.04em;text-transform:uppercase;
+  display:flex;align-items:center;gap:9px}
+.brand b{color:var(--accent-2)}
+.crest{width:26px;height:30px;flex:none;display:grid;place-items:center;
+  font-family:var(--display);font-size:12px;color:#2a1300;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));
+  clip-path:polygon(50% 0,100% 16%,100% 66%,50% 100%,0 66%,0 16%)}
+#realmTag{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+#sound{background:none;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  color:var(--dim);border-radius:3px;width:34px;height:34px;font-size:14px;cursor:pointer;
+  margin-right:8px;transition:color .3s,border-color .3s}
+#sound.on{color:var(--accent-2);border-color:var(--accent-2)}
+.navwrap{display:flex;align-items:center}
+.navplay{font-family:var(--display);font-size:14px;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 16px;border-radius:3px;background:var(--accent-2);color:#0d1a02;cursor:pointer;border:0}
+.navplay:disabled{
+  opacity:.58;
+  cursor:wait;
+}
+body[data-realm="toez"] .navplay{color:#2a1300}
+
+/* ============ hero ============ */
+#hero{min-height:100svh;display:grid;place-items:center;text-align:center;padding-top:70px;overflow:hidden}
+#heroPortal{position:absolute;top:44%;left:50%;width:min(84vw,560px);aspect-ratio:1;
+  transform:translate(-50%,-50%) scale(.2);opacity:0;
+  background:radial-gradient(circle, color-mix(in srgb,var(--arc) 70%,transparent) 0%, transparent 62%);
+  filter:blur(18px);animation:portalIn 1.5s .1s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes portalIn{to{transform:translate(-50%,-50%) scale(1);opacity:.75}}
+#heroArt{width:min(74vw,430px);margin:0 auto;position:relative;
+  opacity:0;transform:translateY(46px) scale(.94);
+  animation:zillaIn 1.15s .55s cubic-bezier(.16,.9,.3,1) forwards;
+  filter:drop-shadow(0 28px 40px rgba(0,0,0,.75))}
+@keyframes zillaIn{to{opacity:1;transform:none}}
+#heroTitle{font-family:var(--display);text-transform:uppercase;line-height:.84;
+  font-size:clamp(52px,16vw,132px);
+  color:var(--toxic);
+  text-shadow:0 0 30px rgba(127,255,42,.35), 0 5px 0 #103a04;
+  opacity:0;transform:scale(1.35);animation:slam .5s 1.15s cubic-bezier(.2,1.2,.3,1) forwards}
+@keyframes slam{to{opacity:1;transform:none}}
+#heroSub{font-family:var(--royal);font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  font-size:clamp(13px,3.6vw,20px);color:var(--gold-2);margin-top:12px;
+  opacity:0;animation:fadeUp .7s 1.45s ease forwards}
+#heroKick{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#ff8fa3;
+  opacity:0;animation:fadeUp .7s .95s ease forwards}
+#heroBtns{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .7s 1.7s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#scrollcue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);
+  opacity:0;animation:fadeUp .8s 2.1s ease forwards}
+#scrollcue span{display:block;width:1px;height:26px;margin:8px auto 0;
+  background:linear-gradient(var(--accent),transparent);animation:cue 1.9s infinite}
+@keyframes cue{0%,100%{opacity:.25;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ============ origin ============ */
+.split{display:grid;gap:clamp(24px,5vw,60px);align-items:center;
+  grid-template-columns:1fr}
+@media(min-width:820px){.split{grid-template-columns:1.05fr .95fr}
+  .split.flip>*:first-child{order:2}}
+.quote{font-family:var(--display);text-transform:uppercase;line-height:1.02;
+  font-size:clamp(26px,6.4vw,44px);margin-top:28px;
+  border-left:3px solid var(--accent);padding-left:18px}
+.quote em{font-style:normal;color:var(--accent-2)}
+
+/* ============ gateway ============ */
+#gateway{min-height:150svh;padding:0}
+#gwStick{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden}
+#gwRing{position:absolute;width:min(90vw,620px);aspect-ratio:1;border-radius:50%;
+  background:conic-gradient(from 0deg,
+    rgba(177,74,255,.0), rgba(177,74,255,.85), rgba(255,215,110,.9), rgba(177,74,255,.0));
+  filter:blur(calc(26px - var(--open,0) * 16px));
+  transform:scale(calc(.32 + var(--open,0) * .8)) rotate(calc(var(--open,0) * 220deg));
+  opacity:calc(.28 + var(--open,0) * .6)}
+#gwCore{position:absolute;width:min(74vw,470px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,#fff 0%, var(--gold-2) 16%, var(--arc) 46%, transparent 70%);
+  transform:scale(calc(var(--open,0) * var(--open,0) * 1.25));
+  opacity:calc(.15 + var(--open,0) * .85)}
+#gwText{position:relative;text-align:center;padding:0 var(--pad)}
+#gwText h2{opacity:calc(1 - var(--open,0) * 1.5)}
+#gwArrive{position:absolute;left:0;right:0;text-align:center;padding:0 var(--pad);
+  opacity:calc(max(0, var(--open,0) - .55) * 2.6);
+  transform:translateY(calc((1 - var(--open,0)) * 30px))}
+#gwArrive .t{font-family:var(--royal);font-weight:800;text-transform:uppercase;
+  font-size:clamp(28px,8vw,62px);color:var(--gold-2);
+  text-shadow:0 0 40px rgba(245,179,1,.45)}
+
+/* ============ toezlandia ============ */
+#toezScene{position:relative;padding:0}
+#toezImg{width:100%;height:min(76svh,620px);object-fit:cover;object-position:50% 42%;
+  filter:saturate(1.05) contrast(1.03)}
+#toezScene .over{position:absolute;inset:auto 0 0 0;padding:var(--pad);
+  background:linear-gradient(180deg,transparent,rgba(8,3,18,.5) 40%,var(--void));
+  padding-top:22vh}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pill{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:7px 13px;border-radius:100px;
+  border:1px solid color-mix(in srgb,var(--accent) 48%,transparent);color:var(--ink)}
+
+/* ============ rails ============ */
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:6px var(--pad) 22px;margin:26px calc(var(--pad) * -1) 0;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail::after{content:"";flex:0 0 4px}
+
+.zcard{flex:0 0 clamp(214px,64vw,258px);scroll-snap-align:center;cursor:pointer;
+  background:linear-gradient(168deg, color-mix(in srgb,var(--accent) 15%,#150a26), #0d0518);
+  border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);
+  border-radius:3px;overflow:hidden;position:relative;
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), border-color .3s}
+.zcard:active{transform:translateY(-5px);border-color:var(--accent)}
+.zcard .por{position:relative;aspect-ratio:184/226;overflow:hidden;
+  background:#0a0414}
+.zcard .por img{width:100%;height:100%;object-fit:cover;
+  transition:transform .5s cubic-bezier(.2,.8,.3,1);
+  animation:breathe var(--br,6.5s) ease-in-out infinite var(--bd,0s)}
+@keyframes breathe{50%{transform:scale(1.035) translateY(-2px)}}
+/* eye glint sweeping across the plate */
+.zcard .por .glint{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.30) 47%,
+    rgba(255,255,255,.05) 53%,transparent 62%);
+  transform:translateX(-120%);animation:glint 7s ease-in-out infinite var(--gd,0s)}
+@keyframes glint{0%,72%{transform:translateX(-120%)}86%,100%{transform:translateX(120%)}}
+.zcard.pop{animation:pop .42s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{40%{transform:translateY(-9px) scale(1.03)}}
+.zcard:active .por img{transform:scale(1.06)}
+.zcard .por::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 42%,rgba(10,4,20,.9) 100%)}
+.zcard .num{position:absolute;top:9px;left:11px;z-index:2;font-family:var(--display);
+  font-size:13px;color:var(--accent-2);letter-spacing:.08em}
+.zcard .nm{position:absolute;left:12px;right:12px;bottom:9px;z-index:2;
+  font-family:var(--display);font-size:26px;text-transform:uppercase;line-height:.9}
+.zcard .bd{padding:13px 14px 16px}
+.zcard .rl{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2)}
+.zcard .ln{font-size:13.5px;color:var(--dim);margin-top:8px;min-height:3.2em}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.chip{font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:2px;background:color-mix(in srgb,var(--accent) 17%,transparent);
+  color:var(--ink)}
+
+.ecard{flex:0 0 clamp(250px,76vw,330px);scroll-snap-align:center;cursor:pointer;
+  display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;
+  padding:14px;border-radius:3px;
+  background:linear-gradient(100deg,#160a24,#0b0414);
+  border:1px solid rgba(255,59,92,.3);
+  transition:border-color .3s, transform .3s}
+.ecard:active{transform:translateY(-4px);border-color:#ff3b5c}
+.ecard img{width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.7))}
+.ecard .nm{font-family:var(--display);font-size:21px;text-transform:uppercase;line-height:1}
+.ecard .ln{font-size:12.5px;color:var(--dim);margin-top:5px}
+.threat{margin-top:9px;height:4px;border-radius:3px;background:rgba(255,255,255,.09);overflow:hidden}
+.threat i{display:block;height:100%;background:linear-gradient(90deg,#ff8a4a,#ff3b5c);width:0;
+  transition:width 1.1s cubic-bezier(.2,.8,.3,1)}
+.in .threat i{width:var(--t)}
+
+/* ============ key art — the camera discovers the world ============ */
+#world{padding:0;position:relative;isolation:isolate}
+#worldStage{position:relative;height:132svh}
+#worldFrame{position:sticky;top:0;height:100svh;overflow:hidden;
+  display:grid;place-items:center}
+/* the shutter: opens from the middle as the camera finds the scene */
+#worldMask{position:absolute;inset:0;overflow:hidden;
+  clip-path:inset(calc((1 - var(--rv,0)) * 50%) 0 calc((1 - var(--rv,0)) * 50%) 0)}
+#worldArt{width:100%;height:100%;object-fit:cover;
+  object-position:50% calc(38% + var(--pz,0) * 16%);
+  transform:scale(calc(1.14 - var(--rv,0) * .12)) translateY(calc(var(--pz,0) * -3.5%));
+  will-change:transform}
+@media(min-width:900px){#worldArt{object-position:50% calc(30% + var(--pz,0) * 20%)}}
+/* light from the art bleeding into the page above and below */
+#worldBleed{position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,var(--void) 0%,rgba(20,6,40,.25) 14%,transparent 34%,
+      transparent 62%,rgba(20,6,40,.35) 84%,var(--void) 100%),
+    radial-gradient(70% 40% at 74% 30%, rgba(245,179,1,calc(var(--rv,0)*.22)), transparent 70%),
+    radial-gradient(60% 45% at 16% 22%, rgba(177,74,255,calc(var(--rv,0)*.26)), transparent 70%)}
+/* embers drifting in FRONT of the art */
+#worldFront{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#worldFront i{position:absolute;bottom:-10px;border-radius:50%;
+  width:var(--s,3px);height:var(--s,3px);background:var(--c,#ffd76e);
+  box-shadow:0 0 8px var(--c,#ffd76e);opacity:0;
+  animation:ember var(--d,9s) linear infinite var(--dl,0s)}
+@keyframes ember{
+  0%{opacity:0;transform:translateY(0) translateX(0)}
+  12%{opacity:.9}
+  100%{opacity:0;transform:translateY(-105svh) translateX(var(--dx,20px))}}
+/* world hotspots */
+.hs{position:absolute;z-index:3;width:34px;height:34px;transform:translate(-50%,-50%);
+  cursor:pointer;background:none;border:0;padding:0;
+  opacity:calc(max(0, var(--rv,0) - .55) * 2.4)}
+.hs::before{content:"";position:absolute;inset:12px;border-radius:50%;
+  background:var(--gold-2);box-shadow:0 0 12px var(--gold-2)}
+.hs::after{content:"";position:absolute;inset:4px;border-radius:50%;
+  border:1px solid var(--gold-2);animation:ping 2.6s ease-out infinite var(--pd,0s)}
+@keyframes ping{0%{transform:scale(.5);opacity:.9}70%,100%{transform:scale(1.6);opacity:0}}
+.hs.seen::after{animation:none;opacity:.25}
+#hsLabel{position:absolute;z-index:4;left:50%;bottom:12%;transform:translateX(-50%);
+  padding:10px 16px;border-radius:3px;background:rgba(8,3,18,.9);
+  border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);
+  text-align:center;max-width:min(84vw,420px);opacity:0;transition:opacity .35s;pointer-events:none}
+#hsLabel.on{opacity:1}
+#hsLabel b{display:block;font-family:var(--display);font-size:17px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--gold-2)}
+#hsLabel span{font-size:12.5px;color:var(--dim)}
+#worldCap{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top) + 76px);z-index:3;
+  text-align:center;padding:0 var(--pad);
+  opacity:calc(max(0, var(--rv,0) - .3) * 1.8)}
+#worldCap .k{font-size:10.5px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold-2)}
+#worldCap .t{font-family:var(--display);text-transform:uppercase;line-height:.9;
+  font-size:clamp(30px,8.6vw,62px);margin-top:6px;
+  text-shadow:0 4px 30px rgba(0,0,0,.85)}
+
+/* ============ reveal variants ============ */
+.rv.up{transform:translateY(58px) scaleY(.94);transform-origin:bottom}
+.rv.up.in{transform:none}
+.rv.depth{transform:scale(.86) translateY(30px);filter:blur(7px)}
+.rv.depth.in{transform:none;filter:none}
+.rv.invade{transform:translateX(-70px) skewX(5deg)}
+.rv.invade.in{transform:none}
+
+/* ============ seasons as locked gateways ============ */
+.se{position:relative}
+.se .s{position:relative}
+.gatechip{width:52px;height:52px;flex:none;border-radius:50%;display:grid;place-items:center;
+  font-size:17px;position:relative;
+  background:radial-gradient(circle,color-mix(in srgb,var(--accent) 30%,transparent),transparent 70%);
+  border:1px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+.gatechip.locked{filter:grayscale(.7);opacity:.55}
+.gatechip.locked::after{content:"🔒";position:absolute;bottom:-4px;right:-4px;font-size:11px}
+.se{grid-template-columns:52px 1fr;gap:16px;align-items:center}
+.se .s{font-size:11px;letter-spacing:.14em;color:var(--dim);display:block;margin-bottom:2px}
+
+/* ============ play convergence ============ */
+#converge{position:fixed;inset:0;z-index:88;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 50%, rgba(255,240,200,.96) 0%,
+    rgba(245,179,1,.9) 22%, rgba(177,74,255,.85) 48%, rgba(8,3,18,0) 74%)}
+#converge.in{animation:conIn .5s cubic-bezier(.5,0,.9,.6) forwards}
+#converge.out{animation:conOut .7s cubic-bezier(.1,.5,.3,1) forwards}
+@keyframes conIn{0%{opacity:0;transform:scale(2.6)}100%{opacity:1;transform:scale(1)}}
+@keyframes conOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2.8)}}
+
+/* ============ invasion ============ */
+#threats{overflow:hidden}
+#invasion{position:absolute;inset:auto 0 0 0;height:min(46vh,340px);z-index:0;
+  pointer-events:none;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 72%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 30%,#000 72%,transparent)}
+#invasion img{position:absolute;bottom:0;width:var(--w,84px);
+  opacity:var(--o,.18);filter:saturate(.7) brightness(.8);
+  animation:march var(--dur,26s) linear infinite var(--dl,0s), bob 1.1s ease-in-out infinite var(--dl,0s)}
+@keyframes march{from{transform:translateX(-22vw)}to{transform:translateX(118vw)}}
+@keyframes bob{50%{margin-bottom:5px}}
+#threats .wrap,#threats .rail{position:relative;z-index:1}
+
+/* ============ game ============ */
+#game{background:
+  radial-gradient(90% 60% at 50% 0%, color-mix(in srgb,var(--toxic) 11%,transparent), transparent 62%)}
+#arcade{position:relative;margin-top:32px}
+#arcade::before{content:"";position:absolute;left:50%;top:50%;width:min(120vw,780px);aspect-ratio:1;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+  background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--accent) 55%,transparent),
+    color-mix(in srgb,var(--accent-2) 45%,transparent),transparent);
+  filter:blur(46px);opacity:.42;animation:spin 22s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+#arcade .cabinet{position:relative;z-index:1}
+.energy{position:relative;z-index:1;margin-top:12px;height:3px;border-radius:3px;overflow:hidden;
+  background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.energy i{display:block;height:100%;width:38%;
+  background:linear-gradient(90deg,transparent,var(--accent-2),transparent);
+  animation:sweepbar 2.6s ease-in-out infinite}
+@keyframes sweepbar{0%{transform:translateX(-100%)}100%{transform:translateX(360%)}}
+.cabinet{margin-top:28px;border:1px solid color-mix(in srgb,var(--accent) 36%,transparent);
+  border-radius:4px;overflow:hidden;position:relative;
+  background:linear-gradient(170deg,#180b2b,#08040f);
+  box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.cabtop{display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 26%,transparent);
+  font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--toxic);box-shadow:0 0 10px var(--toxic)}
+.cabbody{position:relative;display:grid;place-items:center;padding:34px 20px 30px;text-align:center;
+  min-height:330px}
+.cabbody .shot{width:min(58vw,210px);filter:drop-shadow(0 18px 26px rgba(0,0,0,.7));
+  animation:hover 5s ease-in-out infinite}
+@keyframes hover{50%{transform:translateY(-9px)}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:26px;
+  background:color-mix(in srgb,var(--accent) 22%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);border-radius:3px;overflow:hidden}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:#0c0518;padding:16px 12px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:clamp(26px,7vw,38px);color:var(--accent-2);line-height:1}
+.stat span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.feat{display:grid;gap:10px;margin-top:24px}
+@media(min-width:700px){.feat{grid-template-columns:repeat(3,1fr)}}
+.feat div{padding:14px 16px;border-left:2px solid var(--accent);background:rgba(255,255,255,.025);
+  font-size:13.5px;color:var(--dim)}
+.feat b{color:var(--ink);display:block;font-family:var(--display);font-size:15px;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+
+/* ============ play overlay — a true full-viewport frame ============
+   The game file is already correct on its own. Everything here exists so the
+   embed inherits nothing: no width, max-width, aspect-ratio, transform,
+   flex shrink or cabinet sizing reaches the iframe. */
+#play{
+  position:fixed; inset:0; z-index:90; display:none;
+  width:100%; height:100vh; height:100dvh;
+  margin:0; padding:0; border:0;
+  background:#04010a; overflow:hidden;
+  overscroll-behavior:none; touch-action:none;
+}
+#play.on{display:block}
+#playSlot{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  margin:0; padding:0; border:0;
+  display:block; overflow:hidden;
+  max-width:none; max-height:none; min-width:0; min-height:0;
+}
+#play iframe{
+  display:block;
+  width:100%;  height:100%;
+  min-width:100%; min-height:100%;
+  max-width:none; max-height:none;
+  margin:0; padding:0; border:0; outline:0;
+  transform:none; aspect-ratio:auto; flex:none;
+  background:#04010a;
+}
+#playClose{
+  position:fixed;
+  top:calc(env(safe-area-inset-top, 0px) + 10px);
+  right:calc(env(safe-area-inset-right, 0px) + 12px);
+  z-index:120;
+  font-family:var(--display); font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 15px; border-radius:3px; border:1px solid rgba(255,255,255,.4);
+  background:rgba(8,3,18,.82); color:#fff; cursor:pointer; backdrop-filter:blur(6px);
+  display:none;
+}
+#play.on #playClose{display:block}
+/* the page underneath must not scroll or rubber-band while the game is up */
+body.playing{position:fixed; left:0; right:0; width:100%; overflow:hidden; overscroll-behavior:none}
+
+/* ============ guardian ============ */
+.ladder{margin-top:30px;position:relative;padding-left:30px}
+.ladder::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(var(--accent),color-mix(in srgb,var(--accent) 10%,transparent))}
+.rung{position:relative;padding:12px 0 12px 6px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rung::before{content:"";position:absolute;left:-26px;top:19px;width:12px;height:12px;
+  border-radius:50%;background:var(--bg-2);border:2px solid var(--accent)}
+.rung.here::before{background:var(--accent-2);border-color:var(--accent-2);
+  box-shadow:0 0 16px var(--accent-2)}
+.rung .lv{font-family:var(--display);font-size:13px;color:var(--accent-2);letter-spacing:.1em;
+  min-width:64px}
+.rung .nm{font-family:var(--display);font-size:clamp(19px,5vw,26px);text-transform:uppercase}
+.rung .ds{font-size:12.5px;color:var(--dim);flex-basis:100%}
+.crests{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}
+@media(min-width:760px){.crests{grid-template-columns:repeat(4,1fr)}}
+.crest-c{padding:18px 14px;text-align:center;border-radius:3px;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--accent) 13%,#120722),#0a0416);
+  border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.crest-c .ic{font-size:30px}
+.crest-c b{display:block;font-family:var(--display);font-size:15px;text-transform:uppercase;
+  letter-spacing:.05em;margin:8px 0 4px}
+.crest-c span{font-size:11.5px;color:var(--dim)}
+
+/* ============ two tokens ============ */
+.duo{display:grid;gap:14px;margin-top:26px}
+@media(min-width:820px){.duo{grid-template-columns:1.08fr .92fr;align-items:stretch}}
+.tokcard{position:relative;padding:26px 22px 24px;border-radius:4px;overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--tc) 42%,transparent);
+  background:linear-gradient(168deg,color-mix(in srgb,var(--tc) 14%,#120722),#0a0416)}
+.tokcard::before{content:"";position:absolute;inset:-60% -30% auto -30%;height:150%;
+  background:radial-gradient(50% 50% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%)}
+.tokcard>*{position:relative}
+.tokcard .ic{font-size:40px;line-height:1}
+.tokcard .tk{font-family:var(--display);font-size:clamp(34px,9vw,52px);letter-spacing:.02em;
+  color:var(--tc);line-height:.95;margin-top:8px}
+.tokcard .rl{font-family:var(--display);font-size:14px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink);opacity:.9;margin-top:4px}
+.tokcard ul{list-style:none;margin:16px 0 0;display:flex;flex-wrap:wrap;gap:7px}
+.tokcard li{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 11px;border-radius:100px;border:1px solid color-mix(in srgb,var(--tc) 40%,transparent)}
+.tokcard .sup{margin-top:16px;font-size:15px;color:var(--dim);font-style:italic}
+.tokcard.flag{--tc:#f5b301}
+.tokcard.flag .rl::after{content:"Flagship";margin-left:10px;font-size:9px;letter-spacing:.2em;
+  padding:3px 7px;border-radius:2px;background:var(--gold);color:#2a1300;vertical-align:2px}
+.tokcard.guard{--tc:#b14aff}
+.bridge{margin-top:16px;padding:24px 22px;text-align:center;border-radius:4px;
+  border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);
+  background:linear-gradient(100deg,rgba(177,74,255,.16),rgba(245,179,1,.16))}
+.bridge .q{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+.bridge .h{font-family:var(--display);font-size:clamp(24px,6.6vw,40px);text-transform:uppercase;
+  line-height:1;margin:8px 0 10px}
+.bridge .s{font-size:14.5px;color:var(--dim);max-width:44ch;margin:0 auto}
+
+/* ============ two realms ============ */
+.realms{display:grid;gap:14px;margin-top:26px}
+@media(min-width:820px){.realms{grid-template-columns:1fr 1fr}}
+.realmcard{position:relative;border-radius:4px;overflow:hidden;min-height:280px;
+  border:1px solid color-mix(in srgb,var(--rc) 40%,transparent);
+  background:linear-gradient(170deg,color-mix(in srgb,var(--rc) 15%,#100620),#08040f);
+  padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-end}
+.realmcard.kingdom{--rc:#f5b301}
+.realmcard.zilla{--rc:#b14aff}
+.realmcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34}
+.realmcard.zilla img{object-position:50% 30%}
+.realmcard>*{position:relative}
+.realmcard .h{font-family:var(--display);font-size:clamp(28px,7.4vw,40px);text-transform:uppercase;
+  line-height:.95;color:var(--rc)}
+.realmcard .sub{font-family:var(--display);font-size:13px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink);margin-top:2px}
+.realmcard .list{font-size:13.5px;color:var(--dim);margin-top:12px;line-height:1.8}
+.gateline{margin-top:16px;text-align:center;font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(15px,4.2vw,22px);letter-spacing:.04em;line-height:1.5}
+.gateline em{font-style:normal;color:var(--gold-2)}
+.gateline i{font-style:normal;color:var(--arc)}
+
+/* ============ guardian benefits ============ */
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:24px;
+  background:color-mix(in srgb,var(--accent) 22%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);border-radius:3px;overflow:hidden}
+@media(min-width:760px){.perks{grid-template-columns:repeat(4,1fr)}}
+.perks div{background:#0c0518;padding:16px 12px;font-size:12.5px;color:var(--dim);
+  display:flex;flex-direction:column;gap:6px}
+.perks div b{font-family:var(--display);font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink);font-weight:400}
+.planned{margin-top:14px;font-size:11.5px;color:var(--dim);border-left:2px solid var(--accent);
+  padding-left:12px;line-height:1.7}
+
+/* ============ turdzilla feature ============ */
+.flagship{display:grid;gap:20px;align-items:center;margin-top:26px}
+@media(min-width:820px){.flagship{grid-template-columns:.85fr 1.15fr}}
+.flagship img{width:min(60vw,270px);margin:0 auto;
+  filter:drop-shadow(0 26px 36px rgba(0,0,0,.75));animation:breathe 7s ease-in-out infinite}
+.flagship .nm{font-family:var(--display);font-size:clamp(38px,11vw,68px);text-transform:uppercase;
+  line-height:.9;color:var(--toxic)}
+
+/* ============ discovery flow ============ */
+.flow{margin-top:26px;display:grid;gap:0}
+.step{display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:center;
+  padding:13px 0;position:relative}
+.step::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;
+  background:linear-gradient(var(--accent),color-mix(in srgb,var(--accent) 18%,transparent))}
+.step:first-child::before{top:50%} .step:last-child::before{bottom:50%}
+.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;z-index:1;
+  background:var(--bg-2);border:1px solid var(--accent);font-size:14px}
+.step .t{font-family:var(--display);font-size:clamp(17px,4.6vw,23px);text-transform:uppercase;
+  letter-spacing:.04em}
+.step.big .n{background:var(--gold);border-color:var(--gold);color:#2a1300}
+.step.big .t{color:var(--gold-2)}
+
+/* ============ siege ============ */
+.siege{margin-top:24px;padding:26px 20px;border-radius:4px;text-align:center;
+  border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
+  background:linear-gradient(100deg,rgba(245,179,1,.13),rgba(177,74,255,.13))}
+.siege .vs{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:16px}
+.siege .side{font-family:var(--display);text-transform:uppercase;line-height:1}
+.siege .side .e{font-size:30px;display:block}
+.siege .side .n{font-size:clamp(17px,4.6vw,24px);margin-top:6px}
+.siege .side .s{font-family:var(--body);font-size:11px;letter-spacing:.2em;color:var(--dim);
+  text-transform:uppercase;margin-top:3px}
+.siege .x{font-family:var(--display);font-size:26px;color:var(--dim)}
+
+/* ============ manifesto ============ */
+.manifesto{margin-top:26px;padding:32px 24px;border-radius:4px;text-align:center;
+  border:1px solid var(--gold);background:linear-gradient(170deg,#2a1a05,#0d0716);
+  box-shadow:0 0 50px rgba(245,179,1,.18)}
+.manifesto .m{font-family:var(--display);font-size:clamp(21px,5.6vw,34px);text-transform:uppercase;
+  line-height:1.06}
+.manifesto .m em{font-style:normal;color:var(--gold-2)}
+.manifesto .m i{font-style:normal;color:#ff8fa3;display:block;margin-top:12px}
+
+/* ============ contracts + final ============ */
+.finalcta{text-align:center;margin-top:30px}
+.finalcta .big{font-family:var(--display);font-size:clamp(30px,8.4vw,58px);text-transform:uppercase;
+  line-height:.95}
+.ctarow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+.soon{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--display);font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+  padding:12px 22px;border-radius:4px;border:2px dashed color-mix(in srgb,var(--accent) 40%,transparent);
+  color:var(--dim);cursor:default}
+
+/* ============ the registry ============ */
+#registry{margin-top:46px;position:relative}
+.regbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.trust{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dim);
+  letter-spacing:.04em;margin-top:12px}
+.trust b{color:var(--accent-2);font-weight:600}
+#regPanel{display:none;margin-top:16px;padding:18px;border-radius:3px;
+  border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);
+  background:linear-gradient(168deg,color-mix(in srgb,var(--accent) 10%,#120722),#0a0416)}
+#regPanel.on{display:block;animation:sheetUp .3s cubic-bezier(.2,.85,.3,1)}
+#regPanel input{width:100%;padding:13px 12px;border-radius:3px;font-size:13.5px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:#08040f;color:var(--ink);
+  border:1px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
+#regPanel input:focus{outline:2px solid var(--accent);outline-offset:1px}
+#regMsg{margin-top:12px;font-size:13px;color:var(--dim);line-height:1.6}
+#regMsg .warn{color:var(--gold-2)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid transparent;
+  border-top-color:var(--accent-2);border-radius:50%;animation:sp .7s linear infinite;
+  vertical-align:-2px;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* standings: dormant → alive */
+.crest-c{position:relative;overflow:hidden;transition:border-color .5s, background .5s, opacity .5s}
+.crest-c.dormant{opacity:.5;filter:grayscale(.75)}
+.crest-c.dormant .ic{filter:grayscale(1)}
+.crest-c .lockmsg{display:none;font-size:11px;color:var(--dim);margin-top:7px;
+  letter-spacing:.06em;text-transform:uppercase}
+.crest-c.dormant .lockmsg{display:block}
+.crest-c.live{opacity:1;filter:none;border-color:var(--sc,var(--gold))}
+.crest-c.live .ic{animation:crestWake 1.1s cubic-bezier(.2,1.3,.4,1)}
+@keyframes crestWake{0%{transform:scale(.4) rotate(-18deg);opacity:0}
+  55%{transform:scale(1.22) rotate(6deg);opacity:1}100%{transform:none}}
+.crest-c.live::before{content:"";position:absolute;inset:-40%;pointer-events:none;
+  background:radial-gradient(circle at 50% 62%, color-mix(in srgb,var(--sc) 34%,transparent), transparent 62%);
+  animation:wake 1.4s ease-out}
+@keyframes wake{0%{opacity:0;transform:scale(.3)}40%{opacity:1}100%{opacity:.36;transform:scale(1)}}
+.crest-c .fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.crest-c .fx i{position:absolute;opacity:0}
+/* zilla: crackle */
+.crest-c.live[data-r="zilla"] .fx i{width:2px;background:#d9a3ff;box-shadow:0 0 10px #b14aff;
+  animation:crackle .55s ease-out var(--d) 3}
+@keyframes crackle{0%{opacity:0;height:0}25%{opacity:1}100%{opacity:0;height:var(--h,70px)}}
+/* citizen + royal: gold fall */
+.crest-c.live[data-r="toez"] .fx i{width:3px;height:3px;border-radius:50%;background:var(--gold-2);
+  box-shadow:0 0 8px var(--gold);animation:golddust 2.6s linear var(--d) infinite}
+@keyframes golddust{0%{opacity:0;transform:translateY(-20px)}
+  15%{opacity:.95}100%{opacity:0;transform:translateY(150px)}}
+/* guardian: the two realms collide */
+.crest-c.live[data-r="both"]::after{content:"";position:absolute;left:50%;top:52%;
+  width:150px;height:150px;transform:translate(-50%,-50%);pointer-events:none;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent,rgba(177,74,255,.75),rgba(245,179,1,.8),transparent);
+  filter:blur(13px);animation:portalWake 1.5s ease-out, spin 9s linear infinite 1.5s}
+@keyframes portalWake{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}
+  60%{opacity:1;transform:translate(-50%,-50%) scale(1.25)}100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}}
+/* royal: rays + banners */
+.crest-c.live[data-r="royal"]::after{content:"";position:absolute;inset:-50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,rgba(255,215,110,.22) 0deg 5deg,transparent 5deg 17deg);
+  animation:spin 26s linear infinite;opacity:.5}
+.standtag{position:absolute;top:8px;right:9px;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;padding:3px 7px;border-radius:2px;display:none;
+  background:var(--sc);color:#1a0d00;font-weight:700}
+.crest-c.live .standtag{display:block;animation:fadeUp .5s .5s both}
+
+/* ============ guardian locker ============ */
+#locker{position:fixed;inset:0;z-index:86;display:none}
+#locker.on{display:block}
+#lockerBg{position:absolute;inset:0;background:rgba(4,1,10,.9);backdrop-filter:blur(8px)}
+#lockerCard{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(100%,620px);height:min(92svh,900px);overflow-y:auto;
+  background:linear-gradient(170deg,#20103a,#0a0416);
+  border:1px solid color-mix(in srgb,var(--gold) 42%,transparent);border-bottom:0;
+  border-radius:6px 6px 0 0;padding:20px var(--pad) calc(env(safe-area-inset-bottom) + 30px);
+  animation:sheetUp .34s cubic-bezier(.2,.85,.3,1)}
+#lockerClose{position:absolute;top:10px;right:14px;font-size:22px;color:var(--dim);
+  background:none;border:0;cursor:pointer;z-index:2}
+.slot{border-top:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:16px 0}
+.slot:first-of-type{border-top:0}
+.slot h4{font-family:var(--display);font-size:15px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold-2);font-weight:400}
+.slot .eq{font-size:11.5px;color:var(--dim);margin-top:2px}
+.opts{display:flex;gap:8px;overflow-x:auto;margin-top:11px;padding-bottom:4px;scrollbar-width:none}
+.opts::-webkit-scrollbar{display:none}
+.opt{
+  flex:0 0 122px;
+  min-height:112px;
+  padding:11px 10px;
+  border-radius:3px;
+  cursor:pointer;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);
+  background:#0d0618;
+  transition:border-color .25s,transform .2s
+}
+.opt .g{font-size:24px;display:block;line-height:1.2}
+.opt .n{
+  display:block;
+  font-size:11px;
+  margin-top:5px;
+  line-height:1.3;
+  min-height:29px
+}
+.opt .rq{
+  display:block;
+  font-size:9px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--dim);
+  margin-top:7px;
+  line-height:1.3
+}
+.opt.on{border-color:var(--gold-2);background:linear-gradient(170deg,rgba(245,179,1,.14),#0d0618)}
+.opt.off{opacity:.45}
+.opt.off .g{filter:grayscale(1) brightness(.55)}
+.opt:active{transform:translateY(-3px)}
+.earned{color:var(--toxic)!important}
+#lockerNote{margin-top:20px;font-size:11.5px;color:var(--dim);line-height:1.7;
+  border-left:2px solid var(--accent);padding-left:12px}
+
+/* ============ alliance ============ */
+#alliance .poster{border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:3px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.tokens{display:grid;gap:10px;margin-top:22px}
+@media(min-width:640px){.tokens{grid-template-columns:1fr 1fr}}
+.tok{padding:16px;border-radius:3px;border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+  background:rgba(255,255,255,.025)}
+.tok .h{font-family:var(--display);font-size:22px;letter-spacing:.04em}
+.tok .s{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+.ca{margin-top:12px;display:flex;align-items:center;gap:8px;
+  background:#08040f;border:1px dashed color-mix(in srgb,var(--accent) 40%,transparent);
+  border-radius:3px;padding:9px 10px}
+.ca code{font-size:11px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.ca button{flex:none;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 10px;border-radius:2px;border:0;cursor:pointer;
+  background:var(--accent);color:#0d0220;font-weight:700}
+
+/* ============ seasons ============ */
+.seasons{margin-top:30px;display:grid;gap:2px;background:color-mix(in srgb,var(--accent) 20%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);border-radius:3px;overflow:hidden}
+.se{background:#0b0517;padding:18px 18px;display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:start}
+.se .s{font-family:var(--display);font-size:14px;color:var(--accent-2);letter-spacing:.1em;padding-top:3px}
+.se b{font-family:var(--display);font-size:clamp(19px,5vw,25px);text-transform:uppercase;display:block}
+.se span{font-size:13px;color:var(--dim)}
+.se.now{background:linear-gradient(100deg,color-mix(in srgb,var(--toxic) 10%,#0b0517),#0b0517)}
+
+/* ============ sheet (character detail) ============ */
+.rx{position:fixed;z-index:70;pointer-events:none;font-size:22px;will-change:transform,opacity}
+
+#sheet{position:fixed;inset:0;z-index:80;display:none}
+#sheet.on{display:block}
+#sheetBg{position:absolute;inset:0;background:rgba(4,1,10,.86);backdrop-filter:blur(7px)}
+#sheetCard{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(100%,560px);max-height:88svh;overflow-y:auto;
+  background:linear-gradient(170deg,#22103c,#0c0518);
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  border-bottom:0;border-radius:6px 6px 0 0;padding:22px var(--pad) calc(env(safe-area-inset-bottom) + 26px);
+  animation:sheetUp .34s cubic-bezier(.2,.85,.3,1)}
+@keyframes sheetUp{from{transform:translate(-50%,26px);opacity:0}to{transform:translateX(-50%);opacity:1}}
+#sheetCard img{width:140px;border-radius:3px;float:left;margin:0 16px 10px 0}
+#sheetCard h3{margin-bottom:4px}
+#sheetClose{position:absolute;top:10px;right:14px;font-size:22px;line-height:1;color:var(--dim);
+  background:none;border:0;cursor:pointer}
+
+.motto{font-family:var(--display);font-size:clamp(19px,5vw,25px);text-transform:uppercase;
+  color:var(--accent-2);line-height:1.05;margin:2px 0 12px}
+.band{position:relative;margin:34px 0 0}
+.band img{width:100%;height:min(58svh,420px);object-fit:cover;object-position:50% 38%}
+.band::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--void),transparent 24%,transparent 62%,var(--void))}
+.band figcaption{position:absolute;left:0;right:0;bottom:16px;z-index:2;text-align:center;
+  padding:0 var(--pad);font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(14px,3.8vw,21px);letter-spacing:.04em;
+  text-shadow:0 2px 14px rgba(0,0,0,.9)}
+
+/* ============ footer ============ */
+footer{padding:60px 0 46px;border-top:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.disc{margin-top:26px;font-size:11.5px;color:var(--dim);max-width:62ch;line-height:1.7}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body data-realm="zilla">
+
+<div id="realmwash"></div>
+<canvas id="atmos" aria-hidden="true"></canvas>
+<div id="drift" aria-hidden="true"></div>
+<div id="glitch" aria-hidden="true"></div>
+<div id="lightflash" aria-hidden="true"></div>
+<div id="vig"></div>
+
+<header id="hdr">
+  <div class="brand"><span class="crest">TZ</span> Turdzilla <span id="realmTag">Zilla Realm</span></div>
+  <div class="navwrap">
+    <button id="sound" aria-label="Toggle ambient sound" title="Ambient sound">🔇</button>
+    <button class="navplay" data-play>Play</button>
+  </div>
+</header>
+
+<main>
+
+<!-- 1 — HERO -->
+<section id="hero">
+  <div id="heroPortal"></div>
+  <div class="wrap">
+    <div id="heroKick">Two realms · one alliance</div>
+    <img id="heroArt" src="assets/turdzilla-feature.webp" alt="Turdzilla, guardian of Toezlandia">
+    <h1 id="heroTitle">The realm called.<br>Da Zilla answered.</h1>
+    <div id="heroSub">$DAZILLA — the Guardian Token of Toezlandia</div>
+    <p class="lede" style="margin:14px auto 0;text-align:center;max-width:34ch">The Zillaz crossed the gate for one reason. To protect what was already here.</p>
+    <div id="heroBtns">
+      <button class="btn" data-goto="realms">Enter Toezlandia</button>
+      <button class="btn ghost" data-play>Defend the realm</button>
+    </div>
+  </div>
+  <div id="scrollcue">Scroll<span></span></div>
+</section>
+
+<!-- 2 — WHY TWO TOKENS -->
+<section id="tokens">
+  <div class="wrap">
+    <div class="rv">
+      <div class="marker">The shared universe</div>
+      <h2>One kingdom. Two tokens. Different missions.</h2>
+    </div>
+    <div class="duo">
+      <article class="tokcard flag rv l">
+        <div class="ic">👣</div>
+        <div class="tk">$TOEZ</div>
+        <div class="rl">The Kingdom Token</div>
+        <ul><li>Community</li><li>Identity</li><li>Toezlandia</li><li>Original IP</li></ul>
+        <p class="sup">Own your place in the kingdom.</p>
+      </article>
+      <article class="tokcard guard rv r">
+        <div class="ic">🦖</div>
+        <div class="tk">$DAZILLA</div>
+        <div class="rl">The Guardian Token</div>
+        <ul><li>Games</li><li>Zillaz</li><li>Battles</li><li>Entertainment</li></ul>
+        <p class="sup">Stand with the defenders.</p>
+      </article>
+    </div>
+    <div class="bridge rv up">
+      <div class="q">Hold both?</div>
+      <div class="h">🛡️ Become a Guardian of Toezlandia</div>
+      <p class="s">Two sides of the gate. One shared world. Guardian status belongs to those who stand with both.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 — THE LORE BRIDGE -->
+<section id="gateway">
+  <div id="gwStick">
+    <div id="gwRing"></div>
+    <div id="gwCore"></div>
+    <div id="gwText">
+      <div class="marker" style="justify-content:center">Chapter two</div>
+      <h2>The Inter&shy;dimensional Gateway</h2>
+      <p class="lede" style="margin-left:auto;margin-right:auto;text-align:center">Keep going. It only opens for those who walk toward it.</p>
+    </div>
+    <div id="gwArrive"><div class="t">Toezlandia</div>
+      <p class="tiny" style="margin-top:10px">Home of $TOEZ</p></div>
+    <div id="gwSentinel" style="position:absolute;bottom:34%;width:1px;height:1px"></div>
+  </div>
+</section>
+
+<!-- ============ TOEZLANDIA ============ -->
+
+<section id="vow">
+  <div class="wrap" style="text-align:center">
+    <div class="rv">
+      <h2 style="max-width:20ch;margin:0 auto">One realm has everything worth protecting</h2>
+      <p class="lede" style="margin:18px auto 0;text-align:center;color:var(--accent-2);font-size:clamp(17px,4.6vw,22px)">The other has everything built for protecting it.</p>
+      <p class="lede" style="margin:22px auto 0;text-align:center">The Zillaz did not come to rule Toezlandia. They came to defend it. The realm keeps its crown, its coin and its king. The Zillaz keep the road outside the gate — and everything that comes down it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 — THE TWO REALMS -->
+<section id="realms">
+  <div class="wrap">
+    <div class="rv">
+      <div class="marker">Both sides of the gate</div>
+      <h2>The two realms</h2>
+    </div>
+    <div class="realms">
+      <article class="realmcard kingdom rv l" id="toezScene">
+        <img id="toezImg" src="assets/toezlandia.webp" alt="The golden gates of Toezlandia">
+        <div class="h">Toezlandia</div>
+        <div class="sub">The Kingdom</div>
+        <div class="list">Citizens · Royal Guard · Original TOEZ characters<br>Community · Culture · Kingdom identity<br>Events · The long game</div>
+      </article>
+      <article class="realmcard zilla rv r">
+        <img src="assets/zilla-family.webp" alt="The Zilla Family">
+        <div class="h">Zilla Realm</div>
+        <div class="sub">The Defenders</div>
+        <div class="list">Turdzilla · The Zillaz · Games<br>Battles · Missions · Chaos<br>Entertainment · Future seasons</div>
+      </article>
+    </div>
+    <p class="gateline rv up">The gate connects them.<br><em>$TOEZ is the kingdom.</em> <i>$DAZILLA defends it.</i></p>
+  </div>
+</section>
+
+<!-- 5 — WHERE DO YOU STAND -->
+<section id="guardian">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">The registry of Toezlandia</div>
+      <h2>Where do you stand?</h2>
+      <p class="lede">Your wallet decides your standing. Your standing never gives you a gameplay advantage.</p>
+    </div>
+    <div class="rv up" id="registry">
+      <p class="lede">Holding is recognition, access and identity — not a score multiplier. A leaderboard where the biggest wallet wins is not a leaderboard.</p>
+
+      <div class="regbar">
+  <button class="btn" id="regCheck">Check my standing</button>
+
+  <button
+    class="btn"
+    id="regLinkWallet"
+    hidden
+  >
+    Manage verified wallet
+  </button>
+
+  <button
+    class="btn ghost"
+    id="regLocker"
+    hidden
+  >
+    Enter Guardian Locker
+  </button>
+
+  <button
+    class="btn ghost"
+    id="regForget"
+    hidden
+  >
+    Forget wallet
+  </button>
+</div>
+      <div class="trust">🔒 <span><b>Read-only.</b> No transaction. No signature required. Nothing is ever sent from your wallet.</span></div>
+
+      <div id="regPanel">
+        <label class="tiny" for="regAddr" style="display:block;margin-bottom:8px">Paste a Solana address</label>
+        <input id="regAddr" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="Your public wallet address">
+        <div class="regbar">
+          <button class="btn" id="regGo">The realm recognizes you</button>
+          <button class="btn ghost" id="regConnect">Use my wallet</button>
+        </div>
+        <div id="regMsg"></div>
+      </div>
+
+      <div class="crests" id="crestGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 — GUARDIANS -->
+<section id="gate">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">Dual holders</div>
+      <h2>The gate opens wider for Guardians.</h2>
+      <p class="lede">Holding both does not make you stronger in the game. It makes you part of both sides of the universe.</p>
+    </div>
+    <div class="perks rv">
+      <div><b>Guardian missions</b>Objectives only dual holders can take.</div>
+      <div><b>Seasonal events</b>Competitions tied to each new chapter.</div>
+      <div><b>Limited cosmetics</b>Crests, frames and looks that lapse with standing.</div>
+      <div><b>Profile crests</b>A mark the realm recognises on sight.</div>
+      <div><b>Special game events</b>One-off sieges inside Defend Toezlandia.</div>
+      <div><b>Partner campaigns</b>Crossovers with the wider kingdom.</div>
+      <div><b>Community challenges</b>Goals the whole realm chases together.</div>
+      <div><b>Promotional drops</b>Occasional gifts for standing with both.</div>
+    </div>
+    <p class="planned rv">Planned, not promised. These are intended directions for Guardian standing — there is no guaranteed return, no yield, no passive income and no price support of any kind.</p>
+    <div class="ctarow rv" style="justify-content:flex-start">
+      <button class="btn" data-standing>Check my standing</button>
+      <button class="btn ghost" id="gateLocker">Enter Guardian Locker</button>
+    </div>
+  </div>
+</section>
+
+<!-- 7 — DEFEND TOEZLANDIA -->
+<section id="game">
+  <div class="wrap">
+    <div class="rv depth">
+      <div class="marker">The flagship game</div>
+      <h2>The gates are open. Defend Toezlandia.</h2>
+      <p class="lede">Jeets. Bots. FUDders. Rug Rats. They picked the wrong kingdom.</p>
+      <p class="lede">Free to play. No wallet required. No token required. Stand between the invaders and the gates, chain your kills, build your Zilla and drop a Turdquake when the road is full.</p>
+    </div>
+    <div id="arcade" class="rv">
+    <div class="cabinet">
+      <div class="cabtop"><span class="dot"></span> Defend Toezlandia · Season 1 · live</div>
+      <div class="cabbody">
+        <img class="shot" src="assets/turdquake.webp" alt="Turdzilla unleashing Turdquake">
+        <h3 style="margin-top:20px">Turdquake ready</h3>
+        <p class="lede" style="text-align:center;margin:8px auto 20px">Leap. Slam. Clear the road.</p>
+        <button class="btn charge" data-play>Play now</button>
+      </div>
+    </div>
+    <div class="energy" aria-hidden="true"><i></i></div>
+    </div>
+
+    <div class="stats rv" id="statsBox">
+      <div class="stat"><b id="sBest">—</b><span>Your best score</span></div>
+      <div class="stat"><b id="sKills">—</b><span>Invaders crushed</span></div>
+      <div class="stat"><b id="sRank">Citizen</b><span>Guardian rank</span></div>
+      <div class="stat"><b id="sXp">0</b><span>Guardian XP</span></div>
+    </div>
+
+    <p class="tiny rv" style="margin-top:10px" id="statsNote">Play a run and your record appears here.</p>
+    <div class="feat rv">
+      <div><b>Infinite waves</b>Four invader types, escalating until the realm falls.</div>
+      <div><b>Build your run</b>Level up mid-fight and pick from Common to Legendary.</div>
+      <div><b>King Jeet</b>Every fifth wave the road goes dark and something enormous walks on.</div>
+    </div>
+    <div class="rv up" style="margin-top:52px">
+      <h3>The Guardian path</h3>
+      <p class="lede">Scores reset when a season ends. Guardian XP never does. This ladder is earned on the road — no wallet touches it.</p>
+    </div>
+    <div class="ladder rv" id="ladder"></div>
+  </div>
+</section>
+
+<!-- 8 — MEET THE ZILLAZ -->
+<section id="family">
+  <div class="wrap rv up">
+    <div class="marker">The defenders</div>
+    <h2>Meet the Zillaz</h2>
+  </div>
+  <div class="wrap flagship rv">
+    <img src="assets/turdzilla-feature.webp" alt="Turdzilla">
+    <div>
+      <div class="nm">Turdzilla</div>
+      <p class="lede">The first through the gate. The flagship defender. Chaotic, ridiculous, and built entirely for protecting Toezlandia. He arrived with a gold chain, a purple cap and no plan whatsoever, turned around at the gate and faced back down the road. Nobody has been able to move him since.</p>
+      <div class="pills">
+        <span class="pill">Class · Tank</span><span class="pill">Thick skin</span><span class="pill">Zero plan</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap rv" style="margin-top:44px">
+    <h3>The rest of the family</h3>
+    <p class="lede">They followed, because nobody in that family has ever let one of their own walk into something alone. Tap any of them.</p>
+  </div>
+  <div class="rail" id="famRail"></div>
+  <figure class="band rv depth">
+    <img src="assets/zilla-family.webp" alt="The Zilla Family together">
+    <figcaption>Different personalities. One dysfunctional family. One mission.</figcaption>
+  </figure>
+</section>
+
+<!-- 9 — THE ENEMIES -->
+<section id="threats">
+  <div class="wrap rv invade">
+    <div class="marker">What comes down the road</div>
+    <h2>They don't want the kingdom. They want what's inside it.</h2>
+    <p class="lede">They are not an army. They are a market condition with legs. They arrive in waves, they want the gates, and not one of them has ever had an original thought.</p>
+  </div>
+  <div class="rail" id="foeRail"></div>
+  <div id="invasion" aria-hidden="true"></div>
+</section>
+
+<!-- 10 — KEY ART -->
+<section id="world">
+  <div id="worldStage">
+    <div id="worldFrame">
+      <div id="worldMask">
+        <img id="worldArt" src="assets/guardians-toezlandia.webp"
+             alt="Turdzilla defending the gates of Toezlandia against the invasion, with the Zilla Realm hanging beyond the portal">
+      </div>
+      <div id="worldBleed"></div>
+      <div id="worldFront" aria-hidden="true"></div>
+      <div id="worldCap">
+        <div class="k">Two realms · one alliance</div>
+        <div class="t">Guardians of<br>Toezlandia</div>
+      </div>
+      <div id="hsLabel"><b></b><span></span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 11 — THE DISCOVERY FLOW -->
+<section id="flow">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">How anyone finds this place</div>
+      <h2>One way in leads to all of it</h2>
+    </div>
+    <div class="flow rv">
+      <div class="step"><span class="n">🦖</span><span class="t">Discover Turdzilla</span></div>
+      <div class="step"><span class="n">⚡</span><span class="t">Enter the Zilla Realm</span></div>
+      <div class="step"><span class="n">🎮</span><span class="t">Defend Toezlandia</span></div>
+      <div class="step"><span class="n">🏰</span><span class="t">Discover the kingdom</span></div>
+      <div class="step"><span class="n">👣</span><span class="t">Meet $TOEZ</span></div>
+      <div class="step"><span class="n">💬</span><span class="t">Join the community</span></div>
+      <div class="step big"><span class="n">🛡️</span><span class="t">Hold both — become a Guardian</span></div>
+    </div>
+    <p class="lede rv" style="margin-top:22px;color:var(--accent-2)">The Zillaz are not another kingdom. They are another way into Toezlandia.</p>
+  </div>
+</section>
+
+<!-- 12 — TWO COMMUNITIES, ONE EVENT -->
+<section id="siege">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">Crossover events</div>
+      <h2>Two communities. One event.</h2>
+    </div>
+    <div class="siege rv">
+      <div class="tiny">The first crossover</div>
+      <div style="font-family:var(--display);font-size:clamp(26px,7vw,44px);text-transform:uppercase;margin-top:6px;line-height:1">The Siege of Toezlandia</div>
+      <div class="vs">
+        <div class="side"><span class="e">👣</span><span class="n">$TOEZ holders</span><span class="s">The Kingdom</span></div>
+        <div class="x">×</div>
+        <div class="side"><span class="e">🦖</span><span class="n">$DAZILLA holders</span><span class="s">The Defenders</span></div>
+      </div>
+      <p class="lede" style="margin:20px auto 0;text-align:center">Community challenges, boss battles, score competitions, story events and season launches — run across both sides at once. Nobody ever has to swap one token for the other. The crossover happens in the world, not in a liquidity pool.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 — THE CORE RULE -->
+<section id="rule">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">Ecosystem philosophy</div>
+      <h2>When the Zillaz grow, Toezlandia grows with them</h2>
+      <p class="lede">$DAZILLA was not created to replace $TOEZ. Its purpose is to expand the world around it. A portion of future $DAZILLA creator rewards may be used for Toezlandia development, Guardian events, community experiences and ecosystem initiatives.</p>
+      <p class="lede" style="font-size:14px">No guaranteed returns. No promise of profit. No promise of price support. The goal is simple: Zilla activity should create more activity inside Toezlandia.</p>
+    </div>
+    <div class="manifesto rv">
+      <div class="m">Every major success of <em>$DAZILLA</em> should create another reason to discover, hold, use or participate in <em>$TOEZ</em>.<i>Not another reason to abandon it.</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 — SEASONS -->
+<section id="seasons">
+  <div class="wrap">
+    <div class="rv up">
+      <div class="marker">Chapters, not a roadmap</div>
+      <h2>The gate stays open</h2>
+      <p class="lede">Each season brings a Zilla through the portal, a new stretch of the realm to defend, and a reason to come back.</p>
+    </div>
+    <div class="seasons rv up">
+      <div class="se now"><div class="gatechip">🌀</div>
+        <div><span class="s">Season 1 · open</span><b>The Castle Gate</b>
+        <span>Turdzilla holds the road. Infinite waves, King Jeet, the Guardian path.</span></div></div>
+      <div class="se"><div class="gatechip locked">❄️</div>
+        <div><span class="s">Season 2 · sealed</span><b>The Frozen Toez</b>
+        <span>Something cold is already on the other side of that gate.</span></div></div>
+      <div class="se"><div class="gatechip locked">⚡</div>
+        <div><span class="s">Season 3 · sealed</span><b>Neon District</b>
+        <span>The realm's loudest quarter. You can hear it through the portal.</span></div></div>
+      <div class="se"><div class="gatechip locked">🌈</div>
+        <div><span class="s">Season 4 · sealed</span><b>High Times</b>
+        <span>Nobody is entirely sure where this gate leads. Dudezilla insists it is fine.</span></div></div>
+      <div class="se"><div class="gatechip locked">👑</div>
+        <div><span class="s">Season 5 · sealed</span><b>The Royal Vault</b>
+        <span>The deepest room in Toezlandia. Everything on the road wants in.</span></div></div>
+    </div>
+
+    <p class="tiny rv" style="margin-top:16px">Weekly realm raids and the global defense counter arrive alongside Season 1.</p>
+  </div>
+</section>
+
+<!-- 15 — FINAL -->
+<section id="final">
+  <div class="wrap finalcta">
+    <div class="rv">
+      <div class="marker" style="justify-content:center">Toezlandia</div>
+      <div class="big">One kingdom. Two tokens. Different missions.</div>
+      <p class="lede" style="margin:20px auto 0;text-align:center;font-size:clamp(17px,4.6vw,21px)">
+        👣 <b style="color:var(--gold-2)">$TOEZ is the kingdom.</b><br>
+        🦖 <b style="color:var(--arc)">$DAZILLA defends it.</b><br>
+        🛡️ Hold both. Become a Guardian.</p>
+      <div class="ctarow">
+        <button class="btn" data-goto="realms">Enter Toezlandia</button>
+        <button class="btn ghost" data-play>Defend the realm</button>
+        <button class="btn ghost" data-standing>Check my standing</button>
+      </div>
+    </div>
+    <div class="tokens rv" style="margin-top:36px;text-align:left">
+      <div class="tok">
+        <div class="h" style="color:var(--gold-2)">👣 $TOEZ</div>
+        <div class="s">Kingdom Token</div>
+        <div class="ca"><code id="caToez">3DRCui7ZbEykhrUHMbyXSvn5731fbKchFTFvs1Wjpump</code><button data-copy="caToez">Copy</button></div>
+      </div>
+      <div class="tok">
+        <div class="h" style="color:var(--arc)">🦖 $DAZILLA</div>
+        <div class="s">Guardian Token</div>
+        <div class="ca"><code id="caDaz">Not yet announced</code></div>
+      </div>
+    </div>
+    <p class="tiny rv" style="margin-top:14px">Always verify a contract address from an official channel before buying anything.</p>
+  </div>
+</section>
+
+</main>
+
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="font-size:22px"><span class="crest">TZ</span> Toezlandia calls. The Zillaz answer.</div>
+    <p class="lede" style="margin-top:10px;font-size:15px">👣 $TOEZ is the kingdom. 🦖 $DAZILLA defends it.</p>
+
+    <h3>Toezlandia — the kingdom</h3>
+    <div class="links">
+      <a class="btn ghost" href="https://x.com/toezogtoeken" target="_blank" rel="noopener">$TOEZ on X</a>
+      <a class="btn ghost" href="https://t.me/ToezOGToeken" target="_blank" rel="noopener">$TOEZ Telegram</a>
+      <a class="btn ghost" href="https://dexscreener.com/solana/3DRCui7ZbEykhrUHMbyXSvn5731fbKchFTFvs1Wjpump" target="_blank" rel="noopener">$TOEZ chart</a>
+    </div>
+
+    <h3>Dazillaz — the defenders</h3>
+    <div class="links">
+      <button class="btn ghost" data-play>Play Defend Toezlandia</button>
+      <span class="soon">$DAZILLA — links coming</span>
+    </div>
+
+    <p class="disc">$TOEZ and $DAZILLA are community meme tokens. They are not investments, they carry no promise of profit, no yield, no passive income and no price support, and nothing here is financial advice. Defend Toezlandia is free to play with no purchase required, no wallet needed and no token needed — holder standing is recognition and cosmetics only and never affects score, damage, health, speed or any leaderboard value. Guardian benefits described on this page are intended directions, not guarantees. Turdzilla, the Zillaz and Toezlandia are original characters — any resemblance to other kaiju is entirely a coincidence and legally load-bearing.</p>
+    <p class="tiny" style="margin-top:18px">© Toezlandia · One kingdom, two tokens, different missions</p>
+  </div>
+</footer>
+
+<div id="sheet" role="dialog" aria-modal="true">
+  <div id="sheetBg"></div>
+  <div id="sheetCard">
+    <button id="sheetClose" aria-label="Close">×</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<script id="gameSrc" type="text/plain"></script>
+
+<div id="locker" role="dialog" aria-modal="true" aria-label="Guardian Locker">
+  <div id="lockerBg"></div>
+  <div id="lockerCard">
+    <button id="lockerClose" aria-label="Close">×</button>
+    <div class="marker">The Guardian Locker</div>
+    <h3 id="lockerWho">Unclaimed</h3>
+    <p class="lede" style="font-size:13.5px" id="lockerSub">Everything here is cosmetic. None of it touches damage, speed, score or cooldowns.</p>
+    <div id="lockerSlots"></div>
+    <p id="lockerNote">Holder cosmetics come from standing and can lapse if your balance drops. Earned cosmetics are trophies — once you win them, they are yours permanently, whatever your wallet does.</p>
+  </div>
+</div>
+
+<div id="converge" aria-hidden="true"></div>
+<div id="play" role="dialog" aria-modal="true" aria-label="Defend Toezlandia">
+  <button id="playClose">Close</button>
+  <div id="playSlot"></div>
+</div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* Shared world state. Declared up here because the scroll and realm handlers
+   below run before the engine at the bottom of the file finishes wiring up. */
+let gatePull = 0, gateX = 0, gateY = 0;
+let realm = "zilla";
+let worldVisible = false;
+const items = [];
+/* Silent stand-in until the audio engine is built, so any handler that fires
+   during boot has something safe to call. */
+let SND = { toggle: () => false, enabled: false,
+            tap(){}, cross(){}, thunder(){}, power(){} };
+
+/* ---------- artwork ---------- */
+const IMG = {
+  turdzilla:"assets/turdzilla-card.webp", momazilla:"assets/momazilla-card.webp", babzilla:"assets/babzilla-card.webp",
+  chadzilla:"assets/chadzilla-card.webp", dudezilla:"assets/dudezilla-card.webp", frozilla:"assets/frozilla-card.webp",
+  dopezilla:"assets/dopezilla-card.webp", lilzilla:"assets/lilzilla-card.webp", karenzilla:"assets/karenzilla-card.webp",
+  unczilla:"assets/unczilla-card.webp", bratzilla:"assets/bratzilla-card.webp", grampzilla:"assets/grampzilla-card.webp",
+  jeet:"data:image/webp;base64,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", bot:"data:image/webp;base64,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", fudder:"data:image/webp;base64,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", rugrat:"data:image/webp;base64,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", king:"data:image/webp;base64,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"
+};
+
+/* ---------- the family ---------- */
+const FAMILY = [
+  { k:"turdzilla", n:"Turdzilla", r:"The Gatecrasher", c:["Tank","Thick skin","Loyal"],
+    m:"Somebody has to stand here.",
+    l:"First through the portal. Has not left the gate since.",
+    d:"Arms crossed, chain on, jaw set. He walked past the Toez royal guard, turned around at the gate and faced back down the road, and nobody has been able to move him since. Turdzilla takes more punishment than any Zilla alive and returns it in one enormous, ground-shattering slam. The family follows him because he has never once asked them to." },
+  { k:"momazilla", n:"Momazilla", r:"The Matriarch", c:["Cultured","Real mouthy","Unapologetic"],
+    m:"Sit down. Eat something.",
+    l:"Pearls, teacup, and the sharpest mouth in either realm.",
+    d:"Older, cultured and completely unapologetic. She held the family together in a realm that had nothing left to hold, and she will tell you exactly what she thinks of your life choices while pouring you tea. When Momazilla says the family is crossing through a portal into another dimension, the family crosses through a portal into another dimension." },
+  { k:"babzilla", n:"Babzilla", r:"The FUD Stomper", c:["Sassy","Fearless","Bow"],
+    m:"Steppin' on all the FUD.",
+    l:"Pink bow, gold hoop, zero patience for doomposters.",
+    d:"The one who goes straight at the FUDders. Babzilla does not argue with fear, she steps on it, and she does it with a bow in her spines and a peace sign up. The realm adores her. The invaders have learned to watch for the bow." },
+  { k:"chadzilla", n:"Chadzilla", r:"The Frontliner", c:["High tech","Type A","Built different"],
+    m:"Built different. Literally.",
+    l:"Powered armour, blue arc light, no hesitation whatsoever.",
+    d:"Plated head to tail in reactive tech, lit up in electric blue, and permanently three steps ahead of the wave. Chadzilla does not scout, wait, or ask what the composition looks like — he is already engaged by the time anyone else has finished the sentence." },
+  { k:"dudezilla", n:"Dudezilla", r:"The Vibe", c:["Free spirited","Anything goes","Sloppy"],
+    m:"It's all good, man.",
+    l:"Has never once panicked, including while on fire.",
+    d:"Tie-dye, bucket hat, locs and a heart rate that has never gone above resting. When the wave counter climbs and the gates are shaking, Dudezilla is the reason nobody else spirals. Morale is a defensive stat and he is the entire stack." },
+  { k:"frozilla", n:"Frozilla", r:"The Cold One", c:["Urban","Frosty","Patient"],
+    m:"Stay frosty.",
+    l:"Blue puffer, ice spines, breath you can see.",
+    d:"Frozilla waits at the far edge of the road, hood up, saying nothing, until the invaders are packed tight enough — and then the whole road stops moving at once. Season two of Defend Toezlandia belongs to her." },
+  { k:"dopezilla", n:"Dopezilla", r:"The Operator", c:["Classy","Well dressed","Top tier"],
+    m:"Handled. Don't ask.",
+    l:"Pinstripes, cognac, and a supply line nobody can trace.",
+    d:"Fedora low, suit sharp, glass never empty. Dopezilla never seems to be fighting and somehow the family never runs out of anything. Ask where it came from and he will change the subject so smoothly you end up thanking him." },
+  { k:"lilzilla", n:"Lilzilla", r:"The Youngblood", c:["Headphones","Fast","Fearless"],
+    m:"Turn it up.",
+    l:"Youngest on the road and the quickest to it.",
+    d:"Cap backwards, headphones on, colour everywhere. Lilzilla runs the flanks — the fast, loud, high-risk lanes nobody older wants — with a soundtrack going the entire time. Gramp­zilla says the music is why he never hears an order. Lilzilla says that is the point." },
+  { k:"karenzilla", n:"Karenzilla", r:"The Complaint", c:["Entitled","Relentless","Offended"],
+    m:"This is unacceptable.",
+    l:"Has demanded to speak to the manager of an invading army.",
+    d:"Sunglasses on the head, iced coffee in hand, leopard print, permanently offended. Karenzilla does not fight so much as escalate. Twice now an entire wave has turned around and left rather than continue the conversation, and she counts both as wins." },
+  { k:"unczilla", n:"Unczilla", r:"The Questionable Uncle", c:["Tracksuit","Gold","Connected"],
+    m:"Trust me, I got a guy.",
+    l:"Always has a business opportunity. Never has a receipt.",
+    d:"Tracksuit, chains, bluetooth in one ear and a cigar in the other hand. Unczilla knows a guy for everything — armour, intel, a shortcut through the Market, a cousin at the Vault. Roughly a third of it is real, which is a much better hit rate than anyone expected." },
+  { k:"bratzilla", n:"Bratzilla", r:"The Spoiled Youngest", c:["Designer","Loud","Nuclear"],
+    m:"I want it.",
+    l:"Gets whatever she wants. Including a place on the wall.",
+    d:"Heart sunglasses, pink fur, phone permanently in hand, and tantrums with a measurable blast radius. Bratzilla demanded a spot defending the gate and would not stop until she had one — and the terrifying part is that she is genuinely good at it." },
+  { k:"grampzilla", n:"Grampzilla", r:"The Elder", c:["Old school","Stubborn","Unfiltered"],
+    m:"Back in my day...",
+    l:"Thinks everything after 1987 is stupid. Remembers the old realm.",
+    d:"Flat cap, pipe, spectacles and a newspaper he has read four times. Grampzilla is the keeper of Zilla lore, the only one who knows what the gateway actually is, and the only one who will tell you to your face that the whole plan is stupid before helping execute it perfectly." }
+];
+
+/* ---------- the invaders ---------- */
+const FOES = [
+  { k:"jeet", n:"Jeet", t:38, l:"Paper hands, full bag, zero conviction. Sprints for the gate the second anything moves.",
+    d:"The most common thing on the road and the most predictable. A Jeet holds a bag it never earned, panics at a shadow, and runs directly at whatever it is most afraid of. They arrive in numbers because individually they are nothing, and they never learn, because learning would require staying still." },
+  { k:"bot", n:"Bot", t:52, l:"Mechanical sell pressure. Marches in blocks, never tires, never improvises.",
+    d:"Chart-screen face, scanning eye, six legs and no opinions. Bots do not fear Turdzilla because Bots do not fear. They come in formations, hold a straight line to the gate and hoist a SELL board the moment they arrive. Predictable is not the same as harmless when there are eleven of them." },
+  { k:"fudder", n:"FUDder", t:66, l:"Hooded doomposter with a megaphone. Cannot fight, so it shouts instead.",
+    d:"FUD, LIES and FEAR hang from its belt on paper tags. The FUDder never reaches the gate on its own — it stops at range, raises the megaphone and fires demoralisation directly at whatever is defending. RUG. DEV SOLD. DEAD. GOING TO ZERO. It slows a guardian down, and slowing a guardian down is the whole point." },
+  { k:"rugrat", n:"Rug Rat", t:78, l:"Steals the floor out from under a realm. Avoids the guardian entirely.",
+    d:"The only invader smart enough to go around. A Rug Rat carries a rolled purple rug on its back, keeps its distance from Turdzilla, and slips wide toward the gates while everything else charges straight in. Fastest thing on the road and the most expensive one to miss." },
+  { k:"king", n:"King Jeet", t:100, l:"Sells first. Cries later. The road goes dark before he arrives.",
+    d:"Paper crown, torn cape, two bags he is desperately trying to dump and fists made of pure paper hands. King Jeet is what happens when a Jeet survives long enough to accumulate. He charges the gate, hurls paper hands, summons more bagholders, and at half health enters PANIC SELL MODE — faster, louder and openly weeping." }
+];
+
+/* ---------- ranks ---------- */
+const RANKS = [
+  { lv:"Lv 1",   n:"Citizen",              d:"You showed up. In a realm under siege, that already counts." },
+  { lv:"Lv 5",   n:"Recruit",              d:"You have survived a wave without letting anything through." },
+  { lv:"Lv 10",  n:"Defender",             d:"King Jeet has met you and it did not go well for him." },
+  { lv:"Lv 25",  n:"Guardian",             d:"The gate is genuinely safer when you are on the road." },
+  { lv:"Lv 50",  n:"Elite Guardian",       d:"Other guardians check your build before they pick theirs." },
+  { lv:"Lv 100", n:"Legend of Toezlandia", d:"They put your name on the wall. You are lore now." }
+];
+
+/* ---------- build the rails ---------- */
+const famRail = $("#famRail");
+FAMILY.forEach((f, i) => {
+  const el = document.createElement("article");
+  el.className = "zcard rv";
+  el.innerHTML =
+    '<div class="por"><span class="num">' + String(i + 1).padStart(2, "0") + '</span>' +
+    '<img loading="lazy" src="' + IMG[f.k] + '" alt="' + f.n + '">' +
+    '<div class="nm">' + f.n + '</div></div>' +
+    '<div class="bd"><div class="rl">' + f.r + '</div>' +
+    '<div class="ln">' + f.l + '</div>' +
+    '<div class="chips">' + f.c.map(c => '<span class="chip">' + c + '</span>').join("") + '</div></div>';
+  el.addEventListener("click", ev => {
+    const r = el.getBoundingClientRect();
+    reactBurst(r.left + r.width / 2, r.top + r.height * .42, REACT[f.k] || "✨");
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+    SND.tap();
+    setTimeout(() => openSheet(f.n, f.r, IMG[f.k], f.d, f.c, f.m), 150);
+  });
+  famRail.appendChild(el);
+});
+
+const foeRail = $("#foeRail");
+FOES.forEach(f => {
+  const el = document.createElement("article");
+  el.className = "ecard rv";
+  el.style.setProperty("--t", f.t + "%");
+  el.innerHTML =
+    '<img loading="lazy" src="' + IMG[f.k] + '" alt="' + f.n + '">' +
+    '<div><div class="nm">' + f.n + '</div><div class="ln">' + f.l + '</div>' +
+    '<div class="threat"><i></i></div>' +
+    '<div class="tiny" style="margin-top:6px;font-size:9.5px">Threat ' + f.t + '</div></div>';
+  el.addEventListener("click", () => { SND.tap(); openSheet(f.n, "Invader", IMG[f.k], f.d, [], null); });
+  foeRail.appendChild(el);
+});
+
+const ladder = $("#ladder");
+RANKS.forEach(r => {
+  const el = document.createElement("div");
+  el.className = "rung";
+  el.innerHTML = '<span class="lv">' + r.lv + '</span><span class="nm">' + r.n + '</span>' +
+                 '<span class="ds">' + r.d + '</span>';
+  ladder.appendChild(el);
+});
+
+/* ---------- detail sheet ---------- */
+const sheet = $("#sheet");
+function openSheet(name, role, img, body, chips, motto) {
+  $("#sheetBody").innerHTML =
+    '<img src="' + img + '" alt="' + name + '">' +
+    '<div class="marker">' + role + '</div>' +
+    '<h3>' + name + '</h3>' +
+    (motto ? '<p class="motto">&ldquo;' + motto + '&rdquo;</p>' : '') +
+    '<p class="lede" style="font-size:14.5px">' + body + '</p>' +
+    (chips.length ? '<div class="chips" style="clear:both;padding-top:12px">' +
+      chips.map(c => '<span class="chip">' + c + '</span>').join("") + '</div>' : '');
+  sheet.classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeSheet() { sheet.classList.remove("on"); document.body.style.overflow = ""; }
+$("#sheetClose").addEventListener("click", closeSheet);
+$("#sheetBg").addEventListener("click", closeSheet);
+
+/* ---------- play modal (game embedded, never leaves the site) ---------- */
+const play = $("#play"), slot = $("#playSlot");
+/* The game travels inside this page. A blob URL keeps it same-origin, so the
+   Guardian record and locker loadout in localStorage are still shared with it —
+   and there is no second file to 404. */
+let _gameURL = null;
+function gameURL() {
+  if (_gameURL) return _gameURL;
+  const b64 = ($("#gameSrc").textContent || "").trim();
+  if (b64) {
+    try {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      _gameURL = URL.createObjectURL(new Blob([bytes], { type: "text/html;charset=utf-8" }));
+      return _gameURL;
+    } catch (e) {}
+  }
+  _gameURL = "defend-toezlandia.html";      // fallback if the payload is stripped
+  return _gameURL;
+}
+
+const conv = () => $("#converge");
+let scrollLockY = 0;
+function lockPage() {
+  scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.top = (-scrollLockY) + "px";
+  document.body.classList.add("playing");
+}
+function unlockPage() {
+  document.body.classList.remove("playing");
+  document.body.style.top = "";
+  window.scrollTo(0, scrollLockY);
+}
+async function openPlay() {
+  await startOfficialSite();
+
+  const c = conv();
+
+  if (!REDUCED) {
+    c.classList.remove("out");
+    void c.offsetWidth;
+    c.classList.add("in");
+
+    setTimeout(
+      mountPlay,
+      430
+    );
+
+  } else {
+    mountPlay();
+  }
+}
+function mountPlay() {
+  const c = conv();
+  if (!slot.firstChild) {
+    const f = document.createElement("iframe");
+    f.src = gameURL();
+    f.allow = "autoplay; fullscreen; accelerometer; gyroscope";
+    f.setAttribute("allowfullscreen", "");
+    f.setAttribute("scrolling", "no");
+    f.title = "Defend Toezlandia";
+    slot.appendChild(f);
+  }
+  play.classList.add("on");
+  lockPage();
+  paused = true;                     // the atmosphere loop idles while the game runs
+  c.classList.remove("in");
+  nudgeGame();
+}
+
+/* The game measures itself on its own resize event. When the overlay first
+   becomes visible — and on rotation — poke its window so it re-fits. */
+function nudgeGame() {
+  const f = slot.firstChild;
+  if (!f) return;
+  const poke = () => {
+    try { f.contentWindow.dispatchEvent(new Event("resize")); } catch (e) {}
+  };
+  requestAnimationFrame(poke);
+  setTimeout(poke, 120);
+  setTimeout(poke, 400);            // after the iOS toolbar settles
+}
+addEventListener("orientationchange", () => {
+  if (play.classList.contains("on")) setTimeout(nudgeGame, 220);
+});
+addEventListener("resize", () => { if (play.classList.contains("on")) nudgeGame(); });
+function closePlay() {
+  play.classList.remove("on");
+  unlockPage();
+  paused = document.hidden;
+  lastT = performance.now();
+  readRecord();
+  const c = conv();
+  if (!REDUCED) {                                  // bloom back out into the realm
+    c.classList.remove("in"); void c.offsetWidth; c.classList.add("out");
+    setTimeout(() => c.classList.remove("out"), 720);
+    toast("Back in Toezlandia");
+  }
+}
+$$("[data-play]").forEach(b => {
+  b.addEventListener(
+    "click",
+    async () => {
+      if (b.disabled) return;
+
+      const originalText =
+        b.textContent;
+
+      b.disabled = true;
+      b.textContent = "Loading…";
+
+      SND.power();
+
+      try {
+        await openPlay();
+      } finally {
+        b.disabled = false;
+        b.textContent =
+          originalText;
+      }
+    }
+  );
+});
+$("#playClose").addEventListener("click", closePlay);
+addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (play.classList.contains("on")) closePlay();
+  else if (locker.classList.contains("on")) closeLocker();
+  else if (sheet.classList.contains("on")) closeSheet();
+});
+
+/* ---------- guardian record, read from the game's own save ---------- */
+const xpForLevel = l => Math.round(60 * Math.pow(l, 1.45));
+function guardianLevel(xp) { let l = 1; while (xp >= xpForLevel(l + 1) && l < 999) l++; return l; }
+function rankOf(l) {
+  return l >= 100 ? "Legend of Toezlandia" : l >= 50 ? "Elite Guardian" : l >= 25 ? "Guardian"
+       : l >= 10 ? "Defender" : l >= 5 ? "Recruit" : "Citizen";
+}
+function ls(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+function countUp(el, to) {
+  if (REDUCED || to <= 0) { el.textContent = to.toLocaleString("en-US"); return; }
+  const t0 = performance.now(), dur = 900;
+  const tick = now => {
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = Math.round(to * e).toLocaleString("en-US");
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+function readRecord() {
+  const best = ls("dt_best", 0), kills = ls("dt_globalkills", 0), xp = ls("dt_xp", 0);
+  const lvl = guardianLevel(xp), rank = rankOf(lvl);
+  if (best || kills || xp) {
+    countUp($("#sBest"), best); countUp($("#sKills"), kills); countUp($("#sXp"), xp);
+    $("#sRank").textContent = rank;
+    $("#statsNote").textContent = "Your record · Guardian level " + lvl + " · season 1";
+    $$(".rung").forEach(r => r.classList.remove("here"));
+    const idx = [1, 5, 10, 25, 50, 100].reduce((a, v, i) => lvl >= v ? i : a, 0);
+    const rung = $$(".rung")[idx]; if (rung) rung.classList.add("here");
+  } else {
+    $$(".rung")[0] && $$(".rung")[0].classList.add("here");
+  }
+}
+readRecord();
+
+/* ---------- copy buttons ---------- */
+$$("[data-copy]").forEach(b => b.addEventListener("click", async () => {
+  const txt = document.getElementById(b.dataset.copy).textContent.trim();
+  try { await navigator.clipboard.writeText(txt); } catch (e) {}
+  const old = b.textContent; b.textContent = "Copied";
+  setTimeout(() => b.textContent = old, 1400);
+}));
+$$("[data-social]").forEach(a => a.addEventListener("click", e => {
+  if (a.getAttribute("href") === "#") { e.preventDefault(); a.textContent = "Link coming"; }
+}));
+
+/* ---------- reveals ---------- */
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+}, { rootMargin: "0px 0px -12% 0px", threshold: .12 });
+$$(".rv").forEach(el => io.observe(el));
+
+/* ---------- realm switching ---------- */
+const body = document.body, realmTag = $("#realmTag");
+function setRealm(r) {
+  if (r === realm) return;
+  const first = realm !== r;
+  realm = r; body.dataset.realm = r;
+  realmTag.textContent = r === "toez" ? "Toezlandia" : "Zilla Realm";
+  swapDrift();
+  if (first && !REDUCED) {                       // the crossing itself
+    const f = $("#lightflash");
+    f.classList.remove("on"); void f.offsetWidth; f.classList.add("on");
+    SND.cross();
+  }
+}
+const realmIO = new IntersectionObserver(es => {
+  es.forEach(e => setRealm(e.isIntersecting || e.boundingClientRect.top < 0 ? "toez" : "zilla"));
+}, { threshold: 0 });
+realmIO.observe($("#gwSentinel"));
+
+/* ---------- gateway scrub + header ---------- */
+const gw = $("#gateway"), hdr = $("#hdr");
+function onScroll() {
+  const r = gw.getBoundingClientRect();
+  const span = r.height - innerHeight;
+  const open = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+  gw.style.setProperty("--open", open.toFixed(3));
+  // particles are drawn in as you approach and released once you are through
+  const visible = r.top < innerHeight && r.bottom > 0;
+  gatePull = visible ? Math.max(0, 1 - Math.abs(open - .62) / .62) : 0;
+  hdr.classList.toggle("solid", scrollY > innerHeight * .7);
+  if (typeof worldScrub === "function") worldScrub();
+  if (typeof toezPar === "function") toezPar();
+}
+addEventListener("scroll", onScroll, { passive: true });
+addEventListener("resize", onScroll);
+// first run is deferred to the bottom of the file, once every section
+// handler it touches has been created
+
+/* ============================================================
+   WORLD ENGINE — one loop drives fog, embers, ash, gold dust,
+   lore objects, gateway gravity, lightning and realm mood.
+   ============================================================ */
+const MOBILE = innerWidth < 620;
+
+/* ---- lore objects (DOM, foreground depth) ---- */
+const POOL = {
+  zilla: ["💩","🦖","⚡","🤚","☁️","💜","🌀","💩","🦖","💩"],
+  toez:  ["🦶","👑","🛡️","✨","🏰","🪙","🦶","👑","🦶","✨"]
+};
+const drift = $("#drift");
+const N = MOBILE ? 16 : 24;
+for (let i = 0; i < N; i++) {
+  const el = document.createElement("div");
+  const isTz = i % 9 === 4;
+  el.className = "dr" + (isTz ? " tz" : "");
+  const depth = .22 + Math.random() * .78;
+  const o = { el, isTz, depth,
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight * 1.2 - innerHeight * .1,
+    vx: (Math.random() - .5) * .09 * depth,
+    vy: (-.05 - Math.random() * .16) * depth,
+    rot: Math.random() * 360, rotV: (Math.random() - .5) * .06,
+    size: 16 + depth * 44, ix: 0, iy: 0, base: .045 + depth * .10 };
+  el.style.fontSize = o.size + "px";
+  el.style.opacity = o.base.toFixed(3);
+  el.textContent = isTz ? "TZ" : POOL.zilla[i % POOL.zilla.length];
+  drift.appendChild(el); items.push(o);
+}
+let eggMode = 0;
+function swapDrift() {
+  items.forEach((o, i) => {
+    if (o.isTz) return;
+    o.el.style.opacity = "0";
+    setTimeout(() => {
+      o.el.textContent = eggMode ? "💩" : POOL[realm][i % POOL[realm].length];
+      o.el.style.opacity = o.base.toFixed(3);
+    }, 420);
+  });
+}
+
+/* ---- atmosphere canvas (fog, ash, embers, gold dust) ---- */
+const cvs = $("#atmos"), cx2 = cvs.getContext("2d", { alpha: true });
+let VW = 0, VH = 0, DPR = 1;
+function sizeCanvas() {
+  VW = innerWidth; VH = innerHeight;
+  DPR = Math.min(devicePixelRatio || 1, 1.5);
+  cvs.width = VW * DPR; cvs.height = VH * DPR;
+  cvs.style.width = VW + "px"; cvs.style.height = VH + "px";
+  cx2.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+sizeCanvas();
+
+const MOOD = {
+  zilla: { fog:[[26,10,52],[60,18,110],[16,40,10]], mote:["#b14aff","#7fff2a","#8c7fa8"],
+           rise:-.09, sway:.42, count: MOBILE ? 54 : 96, fogA:.13 },
+  toez:  { fog:[[62,34,12],[92,62,16],[46,26,74]], mote:["#f5b301","#ffd76e","#fff4dc"],
+           rise:-.05, sway:.16, count: MOBILE ? 46 : 84, fogA:.16 }
+};
+let mood = MOOD.zilla, moodMix = 0;              // 0 = zilla, 1 = toez
+const motes = [];
+function seedMotes() {
+  motes.length = 0;
+  const n = Math.max(MOOD.zilla.count, MOOD.toez.count);
+  for (let i = 0; i < n; i++) motes.push(newMote(Math.random() * VH));
+}
+function newMote(y) {
+  const depth = .18 + Math.random() * .82;
+  return { x: Math.random() * VW, y: y === undefined ? VH + 20 : y,
+           d: depth, r: (.5 + Math.random() * 1.9) * (.5 + depth),
+           vy: (-.05 - Math.random() * .22) * depth,
+           vx: (Math.random() - .5) * .12,
+           ph: Math.random() * 6.28, sp: .4 + Math.random() * 1.6,
+           ci: (Math.random() * 3) | 0, a: .18 + Math.random() * .55,
+           streak: Math.random() < .16 };
+}
+seedMotes();
+const fogs = Array.from({ length: 5 }, (_, i) => ({
+  x: Math.random() * VW, y: Math.random() * VH,
+  r: (VW * .34) + Math.random() * VW * .3,
+  vx: (Math.random() - .5) * .07, vy: (Math.random() - .5) * .04, ci: i % 3
+}));
+const mix = (a, b, t) => a + (b - a) * t;
+function fogColor(i) {
+  const A = MOOD.zilla.fog[i], B = MOOD.toez.fog[i];
+  return [Math.round(mix(A[0],B[0],moodMix)), Math.round(mix(A[1],B[1],moodMix)), Math.round(mix(A[2],B[2],moodMix))];
+}
+
+/* ---- gateway gravity ---- */
+const gwCore = $("#gwCore");
+
+/* ---- lightning (zilla realm only) ---- */
+const flashEl = $("#lightflash"), glitchEl = $("#glitch");
+let boltT = rnd(2600, 6000), bolt = null;
+function rnd(a, b) { return a + Math.random() * (b - a); }
+function strike() {
+  const pts = [{ x: rnd(VW * .1, VW * .9), y: -20 }];
+  for (let i = 0; i < 7; i++) pts.push({ x: pts[i].x + rnd(-46, 46), y: pts[i].y + rnd(30, VH / 9) });
+  bolt = { pts, life: 260, max: 260 };
+  flashEl.classList.remove("on"); void flashEl.offsetWidth; flashEl.classList.add("on");
+  SND.thunder();
+}
+function tear() {
+  glitchEl.classList.add("tear");
+  setTimeout(() => glitchEl.classList.remove("tear"), 90 + Math.random() * 70);
+}
+let tearT = rnd(5000, 14000);
+
+/* ---- the loop ---- */
+let lastT = performance.now(), lastScroll = scrollY, paused = false;
+document.addEventListener("visibilitychange", () => { paused = document.hidden; lastT = performance.now(); });
+
+function world(now) {
+  requestAnimationFrame(world);
+  if (paused) return;
+  const dt = Math.min(48, now - lastT); lastT = now;
+  const sd = scrollY - lastScroll; lastScroll = scrollY;
+
+  // realm mood crossfade
+  const target = realm === "toez" ? 1 : 0;
+  moodMix += (target - moodMix) * Math.min(1, dt / 700);
+
+  // gateway position + pull strength
+  if (gatePull > 0.001) {
+    const r = gwCore.getBoundingClientRect();
+    gateX = r.left + r.width / 2; gateY = r.top + r.height / 2;
+  }
+
+  cx2.clearRect(0, 0, VW, VH);
+
+  /* fog */
+  const fogA = mix(MOOD.zilla.fogA, MOOD.toez.fogA, moodMix);
+  for (const f of fogs) {
+    f.x += f.vx * dt * .06; f.y += f.vy * dt * .06;
+    if (f.x < -f.r) f.x = VW + f.r; if (f.x > VW + f.r) f.x = -f.r;
+    if (f.y < -f.r) f.y = VH + f.r; if (f.y > VH + f.r) f.y = -f.r;
+    const c = fogColor(f.ci);
+    const g = cx2.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r);
+    g.addColorStop(0, "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + fogA + ")");
+    g.addColorStop(1, "rgba(" + c[0] + "," + c[1] + "," + c[2] + ",0)");
+    cx2.fillStyle = g;
+    cx2.beginPath(); cx2.arc(f.x, f.y, f.r, 0, 6.283); cx2.fill();
+  }
+
+  /* motes: ash + embers in the Zilla Realm, gold dust in Toezlandia */
+  const live = Math.round(mix(MOOD.zilla.count, MOOD.toez.count, moodMix));
+  const rise = mix(MOOD.zilla.rise, MOOD.toez.rise, moodMix);
+  const sway = mix(MOOD.zilla.sway, MOOD.toez.sway, moodMix);
+  const pal = moodMix > .5 ? MOOD.toez.mote : MOOD.zilla.mote;
+  cx2.globalCompositeOperation = "lighter";
+  for (let i = 0; i < live; i++) {
+    const m = motes[i];
+    if (!REDUCED) {
+      m.ph += dt * .003 * m.sp;
+      m.x += (m.vx + Math.sin(m.ph) * sway * m.d) * dt * .06;
+      m.y += (m.vy + rise * m.d) * dt * .9;
+    }
+    m.y -= sd * m.d * .5;                                  // parallax against scroll
+    if (gatePull > .001) {                                  // everything is drawn to the gate
+      const dx = gateX - m.x, dy = gateY - m.y, dd = Math.hypot(dx, dy) || 1;
+      const f = gatePull * gatePull * 26 * m.d / Math.max(90, dd);
+      m.x += dx * f * (dt / 16.7); m.y += dy * f * (dt / 16.7);
+    }
+    if (m.y < -30) { motes[i] = newMote(); continue; }
+    if (m.y > VH + 40) { m.y = -20; m.x = Math.random() * VW; }
+    if (m.x < -30) m.x = VW + 20; if (m.x > VW + 30) m.x = -20;
+    cx2.globalAlpha = m.a * (.35 + m.d * .65) * (1 + gatePull * .6);
+    cx2.fillStyle = pal[m.ci];
+    if (m.streak) cx2.fillRect(m.x, m.y, m.r * .7, m.r * 3.4);
+    else { cx2.beginPath(); cx2.arc(m.x, m.y, m.r, 0, 6.283); cx2.fill(); }
+  }
+  cx2.globalAlpha = 1;
+
+  /* gate flare */
+  if (gatePull > .02) {
+    const g = cx2.createRadialGradient(gateX, gateY, 0, gateX, gateY, VW * .8 * gatePull);
+    g.addColorStop(0, "rgba(255,240,200," + (gatePull * .30) + ")");
+    g.addColorStop(.4, "rgba(177,74,255," + (gatePull * .16) + ")");
+    g.addColorStop(1, "rgba(177,74,255,0)");
+    cx2.fillStyle = g; cx2.fillRect(0, 0, VW, VH);
+  }
+  cx2.globalCompositeOperation = "source-over";
+
+  /* lightning, Zilla Realm only */
+  if (!REDUCED && realm === "zilla") {
+    boltT -= dt;
+    if (boltT <= 0) { boltT = rnd(3400, 9000); strike(); }
+    tearT -= dt;
+    if (tearT <= 0) { tearT = rnd(6000, 16000); tear(); }
+  }
+  if (bolt) {
+    bolt.life -= dt;
+    if (bolt.life > 0) {
+      cx2.globalAlpha = bolt.life / bolt.max;
+      cx2.strokeStyle = "#e3bcff"; cx2.lineWidth = 2.4;
+      cx2.shadowColor = "#b14aff"; cx2.shadowBlur = 22;
+      cx2.beginPath(); cx2.moveTo(bolt.pts[0].x, bolt.pts[0].y);
+      for (const pt of bolt.pts) cx2.lineTo(pt.x, pt.y);
+      cx2.stroke(); cx2.shadowBlur = 0; cx2.globalAlpha = 1;
+    } else bolt = null;
+  }
+
+  /* lore objects */
+  for (const o of items) {
+    if (!REDUCED) {
+      o.x += (o.vx + o.ix) * dt; o.y += (o.vy + o.iy) * dt;
+      o.ix *= .92; o.iy *= .92; o.rot += o.rotV * dt;
+    }
+    o.y -= sd * o.depth * .22;
+    if (gatePull > .001) {
+      const dx = gateX - o.x, dy = gateY - o.y, dd = Math.hypot(dx, dy) || 1;
+      const f = gatePull * gatePull * 20 * o.depth / Math.max(120, dd);
+      o.x += dx * f * (dt / 16.7); o.y += dy * f * (dt / 16.7);
+      o.rot += gatePull * dt * .06;
+    }
+    if (o.y < -120) o.y = VH + 90;
+    if (o.y > VH + 120) o.y = -90;
+    if (o.x < -110) o.x = VW + 80;
+    if (o.x > VW + 110) o.x = -80;
+    const sc = 1 - gatePull * .35;
+    o.el.style.transform = "translate3d(" + o.x.toFixed(1) + "px," + o.y.toFixed(1) + "px,0) rotate(" +
+                           o.rot.toFixed(1) + "deg) scale(" + sc.toFixed(3) + ")";
+  }
+}
+requestAnimationFrame(world);
+
+addEventListener("resize", () => {
+  sizeCanvas(); seedMotes();
+  items.forEach(o => { o.x = Math.min(o.x, innerWidth - 10); o.y = Math.min(o.y, innerHeight + 60); });
+});
+
+/* objects scatter away from a tap */
+addEventListener("pointerdown", e => {
+  if (REDUCED) return;
+  items.forEach(o => {
+    const dx = o.x - e.clientX, dy = o.y - e.clientY, d = Math.hypot(dx, dy);
+    if (d < 190) { const f = (1 - d / 190) * 7 * o.depth;
+      o.ix += (dx / (d || 1)) * f; o.iy += (dy / (d || 1)) * f; }
+  });
+}, { passive: true });
+
+/* ============ optional ambient sound ============ */
+SND = (() => {
+  let ac = null, on = false;
+  const ctxOn = () => { if (!ac) { try { ac = new (AudioContext || webkitAudioContext)(); } catch (e) {} }
+                        if (ac && ac.state === "suspended") ac.resume(); };
+  const tone = (f, dur, type, vol, slide) => {
+    if (!on || !ac) return;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(f, ac.currentTime);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(20, slide), ac.currentTime + dur);
+    g.gain.setValueAtTime(0, ac.currentTime);
+    g.gain.linearRampToValueAtTime(vol, ac.currentTime + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + dur);
+    o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + dur);
+  };
+  return {
+    toggle() { on = !on; if (on) { ctxOn(); setTimeout(() => tone(320, .5, "sine", .05, 640), 60); } return on; },
+    get enabled() { return on; },
+    tap()      { tone(660, .07, "triangle", .035); },
+    cross()    { tone(90, 1.5, "sine", .07, 420); setTimeout(() => tone(220, 1.1, "triangle", .04, 880), 180); },
+    thunder()  { tone(48, .8, "sawtooth", .035, 26); },
+    power()    { tone(180, .5, "square", .04, 720); }
+  };
+})();
+$("#sound").addEventListener("click", e => {
+  const on = SND.toggle();
+  e.currentTarget.textContent = on ? "🔊" : "🔇";
+  e.currentTarget.classList.toggle("on", on);
+});
+
+/* ============ headline arrival ============ */
+$$("h2").forEach(h => {
+  if (h.dataset.split) return;
+  h.dataset.split = "1";
+  const parts = h.innerHTML.split(/(<br\s*\/?>)/i);
+  h.innerHTML = parts.map(p => {
+    if (/^<br/i.test(p)) return p;
+    return p.split(/\s+/).filter(Boolean)
+      .map((w, i) => '<span class="wd" style="transition-delay:' + (i * 65) + 'ms">' + w + '</span>')
+      .join(" ");
+  }).join("");
+});
+
+/* ============ chapter edges ============ */
+$$("section").forEach(sec => {
+  if (sec.id === "hero" || sec.id === "gateway") return;
+  const e = document.createElement("div"); e.className = "edge";
+  sec.style.position = "relative"; sec.prepend(e);
+});
+const edgeIO = new IntersectionObserver(es => es.forEach(x => {
+  if (x.isIntersecting) { x.target.classList.add("go"); edgeIO.unobserve(x.target); }
+}), { threshold: .9 });
+$$(".edge").forEach(e => edgeIO.observe(e));
+
+/* ============ living character cards ============ */
+const REACT = { turdzilla:"💩", momazilla:"🫖", babzilla:"🎀", chadzilla:"⚡", dudezilla:"🌈",
+  frozilla:"❄️", dopezilla:"🥃", lilzilla:"🎧", karenzilla:"☕", unczilla:"🚬",
+  bratzilla:"💅", grampzilla:"📰" };
+function reactBurst(x, y, glyph) {
+  if (REDUCED) return;
+  for (let i = 0; i < 9; i++) {
+    const el = document.createElement("div");
+    el.className = "rx"; el.textContent = glyph;
+    el.style.left = x + "px"; el.style.top = y + "px";
+    document.body.appendChild(el);
+    const a = -Math.PI / 2 + (Math.random() - .5) * 2.1, sp = 60 + Math.random() * 150;
+    el.animate([
+      { transform: "translate(-50%,-50%) scale(.4)", opacity: 1 },
+      { transform: "translate(calc(-50% + " + Math.cos(a) * sp + "px), calc(-50% + " +
+        (Math.sin(a) * sp + 70) + "px)) scale(1.1) rotate(" + (Math.random() * 220 - 110) + "deg)", opacity: 0 }
+    ], { duration: 800 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.4,1)" })
+      .onfinish = () => el.remove();
+  }
+}
+$$("#famRail .zcard").forEach((c, i) => {
+  c.style.setProperty("--br", (5.6 + (i % 5) * .55) + "s");
+  c.style.setProperty("--bd", (i * .37) + "s");
+  c.style.setProperty("--gd", (i * 1.1) + "s");
+  const g = document.createElement("span"); g.className = "glint";
+  c.querySelector(".por").appendChild(g);
+});
+
+/* ============ the invasion marches past ============ */
+const inv = $("#invasion");
+const MARCH = ["jeet","bot","fudder","rugrat","jeet","bot","king","rugrat"];
+MARCH.forEach((k, i) => {
+  const im = document.createElement("img");
+  im.src = IMG[k]; im.alt = ""; im.loading = "lazy";
+  const far = i % 3;
+  im.style.setProperty("--w", (k === "king" ? 150 : 70 + far * 22) + "px");
+  im.style.setProperty("--o", (k === "king" ? .16 : .10 + far * .05).toFixed(2));
+  im.style.setProperty("--dur", (k === "king" ? 54 : 30 + far * 12 + Math.random() * 10) + "s");
+  im.style.setProperty("--dl", (-Math.random() * 40) + "s");
+  im.style.left = "0"; im.style.bottom = (4 + far * 26) + "px";
+  inv.appendChild(im);
+});
+
+/* Toezlandia parallax: the place keeps going past the edge of the shot */
+const toezImg = $("#toezImg"), toezSec = $("#toezScene");
+function toezPar() {
+  const r = toezSec.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) return;
+  const p = (innerHeight - r.top) / (innerHeight + r.height);
+  toezImg.style.transform = "scale(1.14) translateY(" + ((p - .5) * 6).toFixed(2) + "%)";
+}
+
+/* ============ the camera discovers the world ============ */
+const worldStage = $("#worldStage"), worldSec = $("#world");
+const HOTSPOTS = [
+  { x:18, y:12, t:"The Zilla Realm",  d:"Cracked, burning and hanging on the far side of the portal. Everything the Zillaz left behind." },
+  { x:83, y:33, t:"The Gateway",      d:"Cut into the wall of Toezlandia itself. It only opens one way, and it has never closed since." },
+  { x:76, y:14, t:"Toezlandia",       d:"Towers, banners, an airship and a vault. A place with something worth losing." },
+  { x:30, y:86, t:"The Invasion",     d:"Jeets, Bots and FUDders, all the way down the road. This is a quiet day." }
+];
+HOTSPOTS.forEach((h, i) => {
+  const b = document.createElement("button");
+  b.className = "hs"; b.style.left = h.x + "%"; b.style.top = h.y + "%";
+  b.style.setProperty("--pd", (i * .55) + "s");
+  b.setAttribute("aria-label", h.t);
+  b.addEventListener("click", () => {
+    b.classList.add("seen");
+    const L = $("#hsLabel");
+    L.querySelector("b").textContent = h.t;
+    L.querySelector("span").textContent = h.d;
+    L.classList.add("on"); SND.tap();
+    clearTimeout(L._h); L._h = setTimeout(() => L.classList.remove("on"), 4200);
+  });
+  $("#worldFrame").appendChild(b);
+});
+// embers drifting in front of the plate
+const wf = $("#worldFront");
+for (let i = 0; i < (MOBILE ? 14 : 22); i++) {
+  const e = document.createElement("i");
+  e.style.left = (Math.random() * 100) + "%";
+  e.style.setProperty("--s", (2 + Math.random() * 3.4).toFixed(1) + "px");
+  e.style.setProperty("--c", Math.random() < .55 ? "#ffd76e" : "#c98bff");
+  e.style.setProperty("--d", (7 + Math.random() * 9).toFixed(1) + "s");
+  e.style.setProperty("--dl", (-Math.random() * 14).toFixed(1) + "s");
+  e.style.setProperty("--dx", ((Math.random() - .5) * 90).toFixed(0) + "px");
+  wf.appendChild(e);
+}
+new IntersectionObserver(es => es.forEach(x => worldVisible = x.isIntersecting),
+  { threshold: 0 }).observe(worldSec);
+function worldScrub() {
+  if (!worldVisible) return;
+  const r = worldStage.getBoundingClientRect();
+  const span = r.height - innerHeight;
+  const p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+  // shutter opens over the first 55%, then the camera drifts across the scene
+  worldSec.style.setProperty("--rv", Math.min(1, p / .55).toFixed(3));
+  worldSec.style.setProperty("--pz", p.toFixed(3));
+}
+
+/* ============ easter eggs ============ */
+let crestTaps = 0, crestT = 0;
+$(".brand .crest").addEventListener("click", () => {
+  clearTimeout(crestT); crestTaps++;
+  crestT = setTimeout(() => crestTaps = 0, 900);
+  if (crestTaps >= 5) {
+    crestTaps = 0; eggMode = 1; swapDrift(); SND.power();
+    document.documentElement.style.setProperty("--accent-2", "#7fff2a");
+    toast("ZILLA MODE — the realm remembers you");
+    setTimeout(() => { eggMode = 0; swapDrift();
+      document.documentElement.style.removeProperty("--accent-2"); }, 12000);
+  }
+});
+let holdT = 0;
+$("#gwCore").addEventListener("pointerdown", () => {
+  holdT = setTimeout(() => {
+    strike(); SND.cross();
+    toast("The gate opens for those who wait");
+  }, 900);
+}, { passive: true });
+["pointerup","pointercancel","pointerleave"].forEach(ev =>
+  $("#gwCore").addEventListener(ev, () => clearTimeout(holdT), { passive: true }));
+
+function toast(msg) {
+  let t = $("#toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t);
+    t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:95;" +
+      "padding:11px 18px;border-radius:3px;background:rgba(8,3,18,.94);border:1px solid var(--accent);" +
+      "font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:opacity .35s;" +
+      "pointer-events:none;white-space:nowrap"; }
+  t.textContent = msg; t.style.opacity = "1";
+  clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = "0", 2800);
+}
+
+/* ============================================================
+   THE REGISTRY — read-only entitlement lookup.
+   The wallet is an entitlement source, never the player account.
+   ============================================================ */
+const APP_CONFIG = window.DAZILLA_CONFIG || {};
+
+const REG = {
+  API: (APP_CONFIG.REGISTRY_API_BASE || "").replace(/\/+$/, "") || null,
+
+  // Keep direct RPC disabled in the public website.
+  // Holder verification will go through our backend so RPC
+  // credentials/rate-limits are not exposed in browser code.
+  RPC: null,
+
+  MINT_DAZILLA: APP_CONFIG.DAZILLA_MINT || null,
+  MINT_TOEZ: APP_CONFIG.TOEZ_MINT || null,
+
+  MIN_DAZILLA: Number(APP_CONFIG.MIN_DAZILLA || 1),
+  MIN_TOEZ: Number(APP_CONFIG.MIN_TOEZ || 1),
+  BIG_TOEZ: Number(APP_CONFIG.ROYAL_GUARD_TOEZ || 1000000),
+
+  TTL: 10 * 60 * 1000
+};
+
+const STANDINGS = [
+  { id:"zilla",    r:"zilla", ic:"🦖", n:"Zilla Clan",  sc:"#b14aff",
+    d:"Allegiance to the Zilla Realm. Zilla crests, chains and battlefield flare.",
+    lock:"Holds qualifying $DAZILLA" },
+  { id:"citizen",  r:"toez",  ic:"👣", n:"Citizen of Toezlandia", sc:"#f5b301",
+    d:"Toezlandia formally recognises you. Realm crest, banner and gold footfall.",
+    lock:"Holds qualifying $TOEZ" },
+  { id:"guardian", r:"both",  ic:"🛡️", n:"Guardian of Toezlandia", sc:"#d79bff",
+    d:"Both realms at once. The cross-realm identity — portal entrance and Guardian frame.",
+    lock:"Holds qualifying $TOEZ and $DAZILLA" },
+  { id:"royal",    r:"royal", ic:"👑", n:"Royal Guard", sc:"#ffd76e",
+    d:"The prestige standing. Crown entrance, gold nameplate, royal castle banners.",
+    lock:"Significant $TOEZ holder" }
+];
+
+let ENT = ls("dt_ent", null);              // { wallet, balances, standings[], at }
+let LOADOUT = ls("dt_loadout", {});
+
+function saveEnt() { try { localStorage.setItem("dt_ent", JSON.stringify(ENT)); } catch (e) {} }
+function saveLoadout() { try { localStorage.setItem("dt_loadout", JSON.stringify(LOADOUT)); } catch (e) {} }
+
+/* ============================================================
+   OFFICIAL DAZILLA TELEGRAM MODE
+   Normal browser = local website.
+   @DazillaBot Mini App = authenticated shared ecosystem account.
+   ============================================================ */
+
+const OFFICIAL_API_BASE =
+  (APP_CONFIG.OFFICIAL_API_BASE || "")
+    .replace(/\/+$/, "");
+
+let SITE_MODE = "local";
+let SITE_AUTH_TOKEN = null;
+let SITE_USER = null;
+let SITE_PROFILE = null;
+let OFFICIAL_STANDINGS = [];
+let OFFICIAL_SITE_PROMISE = null;
+
+function getSiteTelegramWebApp() {
+  try {
+    if (
+      window.Telegram &&
+      window.Telegram.WebApp &&
+      window.Telegram.WebApp.initData
+    ) {
+      return window.Telegram.WebApp;
+    }
+  } catch (e) {}
+
+  return null;
+}
+
+async function siteOfficialApi(
+  path,
+  options = {}
+) {
+  if (!OFFICIAL_API_BASE) {
+    throw new Error(
+      "Official API is not configured"
+    );
+  }
+
+  const method =
+    options.method || "GET";
+
+  const headers = {
+    ...(SITE_AUTH_TOKEN
+      ? {
+          Authorization:
+            "Bearer " + SITE_AUTH_TOKEN
+        }
+      : {})
+  };
+
+  let body;
+
+  if (options.body !== undefined) {
+    headers["Content-Type"] =
+      "application/json";
+
+    body = JSON.stringify(
+      options.body
+    );
+  }
+
+  const response = await fetch(
+    OFFICIAL_API_BASE + path,
+    {
+      method,
+      headers,
+      body
+    }
+  );
+
+  const json = await response
+    .json()
+    .catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      json.error ||
+      "Official server request failed (" +
+        response.status +
+        ")"
+    );
+  }
+
+  return json;
+}
+
+async function initializeOfficialSite() {
+  const tg =
+    getSiteTelegramWebApp();
+
+  if (
+    !tg ||
+    !tg.initData ||
+    !OFFICIAL_API_BASE
+  ) {
+    SITE_MODE = "local";
+    return false;
+  }
+
+  try {
+    tg.ready();
+    tg.expand();
+
+    const login =
+      await siteOfficialApi(
+        "/api/auth/telegram/dazilla",
+        {
+          method: "POST",
+          body: {
+            initData: tg.initData
+          }
+        }
+      );
+
+    SITE_AUTH_TOKEN =
+      login.token;
+
+    SITE_USER =
+      login.user;
+
+    const locker =
+      await siteOfficialApi(
+        "/api/dazilla/loadout"
+      );
+
+    SITE_PROFILE =
+      locker.profile || null;
+
+    OFFICIAL_STANDINGS =
+      Array.isArray(
+        locker.standings
+      )
+        ? locker.standings
+        : [];
+
+    if (
+      locker.loadout &&
+      typeof locker.loadout ===
+        "object"
+    ) {
+      Object.assign(
+        LOADOUT,
+        locker.loadout
+      );
+
+      saveLoadout();
+    }
+
+    if (SITE_PROFILE) {
+      localStorage.setItem(
+        "dt_xp",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.xp
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_best",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bestScore
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_globalkills",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.kills
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_streak",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.streak
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_lastday",
+        JSON.stringify(
+          String(
+            SITE_PROFILE.lastDay ||
+            ""
+          )
+        )
+      );
+
+      localStorage.setItem(
+        "dt_bestchain",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bestCombo
+          ) || 0
+        )
+      );
+
+      localStorage.setItem(
+        "dt_bosses",
+        JSON.stringify(
+          Number(
+            SITE_PROFILE.bosses
+          ) || 0
+        )
+      );
+    }
+
+    SITE_MODE = "server";
+
+$("#regLinkWallet").hidden = false;
+
+paintStandings(
+  OFFICIAL_STANDINGS,
+  true
+);
+
+console.log(
+  "DAZILLA website official mode authenticated"
+);
+
+    return true;
+
+  } catch (e) {
+    console.warn(
+      "DAZILLA website official login failed:",
+      e
+    );
+
+    SITE_AUTH_TOKEN = null;
+    SITE_USER = null;
+    SITE_PROFILE = null;
+    OFFICIAL_STANDINGS = [];
+    SITE_MODE = "local";
+
+    return false;
+  }
+}
+
+async function startOfficialSite() {
+  if (!OFFICIAL_SITE_PROMISE) {
+    OFFICIAL_SITE_PROMISE =
+      initializeOfficialSite();
+  }
+
+  const ok =
+    await OFFICIAL_SITE_PROMISE;
+
+  /*
+   * If official auth failed because Telegram or the
+   * network hiccupped, allow the next user action to
+   * try again instead of being stuck in local mode
+   * until the Mini App is fully reloaded.
+   */
+  if (!ok) {
+    OFFICIAL_SITE_PROMISE = null;
+  }
+
+  return ok;
+}
+
+async function saveOfficialLoadout() {
+  saveLoadout();
+
+  if (
+    SITE_MODE !== "server" ||
+    !SITE_AUTH_TOKEN
+  ) {
+    return true;
+  }
+
+  const result =
+    await siteOfficialApi(
+      "/api/dazilla/loadout",
+      {
+        method: "POST",
+        body: {
+          loadout: LOADOUT
+        }
+      }
+    );
+
+  if (
+    result.loadout &&
+    typeof result.loadout === "object"
+  ) {
+    Object.assign(
+      LOADOUT,
+      result.loadout
+    );
+
+    saveLoadout();
+  }
+
+  if (
+    Array.isArray(
+      result.standings
+    )
+  ) {
+    OFFICIAL_STANDINGS =
+      result.standings;
+  }
+
+  if (result.profile) {
+    SITE_PROFILE =
+      result.profile;
+  }
+
+  return true;
+}
+
+const SHARED_WALLET_LINK_URL =
+  "https://toezogtoeken.xyz/wallet-link.html";
+
+async function startOfficialWalletLink() {
+  await startOfficialSite();
+
+  if (
+    SITE_MODE !== "server" ||
+    !SITE_AUTH_TOKEN
+  ) {
+    toast(
+      "Open DAZILLA through @DazillaBot first"
+    );
+
+    return;
+  }
+
+  try {
+    const result =
+      await siteOfficialApi(
+        "/api/wallet/link-session",
+        {
+          method: "POST",
+          body: {}
+        }
+      );
+
+    const verifyUrl =
+      SHARED_WALLET_LINK_URL +
+      "?t=" +
+      encodeURIComponent(
+        result.token
+      );
+
+    const phantomUrl =
+      "https://phantom.app/ul/browse/" +
+      encodeURIComponent(
+        verifyUrl
+      ) +
+      "?ref=" +
+      encodeURIComponent(
+        location.origin
+      );
+
+    window.open(
+      phantomUrl,
+      "_blank"
+    );
+
+  } catch (e) {
+    toast(
+      e.message ||
+      "Could not start wallet verification"
+    );
+  }
+}
+
+$("#regLinkWallet").addEventListener(
+  "click",
+  startOfficialWalletLink
+);
+
+const B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+/* ---- balance sources, in order of trust ---- */
+async function fetchBalances(wallet) {
+  if (REG.API) {
+    const r = await fetch(REG.API + "/standing?wallet=" + encodeURIComponent(wallet));
+    if (!r.ok) throw new Error("registry unavailable");
+    return await r.json();                          // { dazilla, toez }
+  }
+  if (REG.RPC && REG.MINT_DAZILLA && REG.MINT_TOEZ) {
+    const one = async mint => {
+      const body = { jsonrpc:"2.0", id:1, method:"getTokenAccountsByOwner",
+        params:[wallet, { mint }, { encoding:"jsonParsed" }] };
+      const r = await fetch(REG.RPC, { method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(body) });
+      const j = await r.json();
+      const accts = (j.result && j.result.value) || [];
+      return accts.reduce((sum, a) =>
+        sum + (a.account.data.parsed.info.tokenAmount.uiAmount || 0), 0);
+    };
+    const [dazilla, toez] = await Promise.all([one(REG.MINT_DAZILLA), one(REG.MINT_TOEZ)]);
+    return { dazilla, toez };
+  }
+  return null;                                      // no source configured yet
+}
+
+function standingsFor(bal) {
+  const out = [];
+  if (bal.dazilla >= REG.MIN_DAZILLA) out.push("zilla");
+  if (bal.toez >= REG.MIN_TOEZ) out.push("citizen");
+  if (bal.dazilla >= REG.MIN_DAZILLA && bal.toez >= REG.MIN_TOEZ) out.push("guardian");
+  if (bal.toez >= REG.BIG_TOEZ) out.push("royal");
+  return out;                                        // cumulative, never exclusive
+}
+
+/* ---- the four standings ---- */
+const crestGrid = $("#crestGrid");
+STANDINGS.forEach(st => {
+  const el = document.createElement("div");
+  el.className = "crest-c dormant";
+  el.dataset.r = st.r; el.dataset.id = st.id;
+  el.style.setProperty("--sc", st.sc);
+  el.innerHTML = '<span class="standtag">Awake</span><div class="fx"></div>' +
+    '<div class="ic">' + st.ic + '</div><b>' + st.n + '</b><span>' + st.d + '</span>' +
+    '<div class="lockmsg">' + st.lock + '</div>';
+  const fx = el.querySelector(".fx");
+  for (let i = 0; i < 7; i++) {
+    const bit = document.createElement("i");
+    bit.style.left = (8 + Math.random() * 84) + "%";
+    bit.style.top = (Math.random() * 40) + "%";
+    bit.style.setProperty("--d", (Math.random() * 2.4).toFixed(2) + "s");
+    bit.style.setProperty("--h", (40 + Math.random() * 70) + "px");
+    fx.appendChild(bit);
+  }
+  crestGrid.appendChild(el);
+});
+
+function paintStandings(list, animate) {
+  $$("#crestGrid .crest-c").forEach(el => {
+    const has = list.includes(el.dataset.id);
+    el.classList.toggle("dormant", !has);
+    if (has && animate && !el.classList.contains("live")) {
+      el.classList.remove("live"); void el.offsetWidth; el.classList.add("live");
+    } else el.classList.toggle("live", has);
+  });
+  const any = list.length > 0;
+  $("#regLocker").hidden =
+  !ENT &&
+  SITE_MODE !== "server";
+
+$("#regForget").hidden = !ENT;
+  return any;
+}
+
+/* ---- the check itself ---- */
+const regPanel = $("#regPanel"), regMsg = $("#regMsg");
+$("#regCheck").addEventListener("click", () => {
+  regPanel.classList.toggle("on");
+  if (regPanel.classList.contains("on")) {
+    if (ENT && ENT.wallet) $("#regAddr").value = ENT.wallet;
+    setTimeout(() => $("#regAddr").focus(), 220);
+  }
+});
+$("#regConnect").addEventListener("click", async () => {
+  const prov = window.solana || (window.phantom && window.phantom.solana);
+  if (!prov || !prov.connect) {
+    regMsg.innerHTML = '<span class="warn">No Solana wallet found in this browser.</span> ' +
+      'You can paste a public address instead — it works exactly the same for standings.';
+    return;
+  }
+  try {
+    const res = await prov.connect();               // read-only: no signature requested
+    $("#regAddr").value = res.publicKey.toString();
+    runCheck();
+  } catch (e) { regMsg.textContent = "No problem — you can paste an address instead."; }
+});
+$("#regGo").addEventListener("click", () => runCheck());
+$("#regAddr").addEventListener("keydown", e => { if (e.key === "Enter") runCheck(); });
+$("#regForget").addEventListener("click", () => {
+  ENT = null; try { localStorage.removeItem("dt_ent"); } catch (e) {}
+  paintStandings([], false);
+  regMsg.textContent = "Wallet forgotten. Your Guardian XP and trophies are untouched.";
+});
+
+async function runCheck(force) {
+  const w = $("#regAddr").value.trim();
+  if (!B58.test(w)) {
+    regMsg.innerHTML = '<span class="warn">That does not look like a Solana address.</span> ' +
+      'Paste the public address — the long one starting with a letter or number.';
+    return;
+  }
+  if (!force && ENT && ENT.wallet === w && Date.now() - ENT.at < REG.TTL) {
+    regMsg.textContent = "Standing already current. Refreshes automatically after ten minutes.";
+    paintStandings(ENT.standings, true);
+    return;
+  }
+  regMsg.innerHTML = '<span class="spin"></span>The realm is looking you up…';
+  try {
+    const bal = await fetchBalances(w);
+    if (!bal) {                                     // no source wired up yet — say so plainly
+      ENT = { wallet: w, balances: null, standings: [], at: Date.now(), preview: true };
+      saveEnt(); paintStandings([], false);
+      regMsg.innerHTML = '<span class="warn">The registry is not connected yet.</span> ' +
+        'Your address is saved on this device, but no balances are being read — the token mints ' +
+        'and an RPC endpoint still need to be filled in. Nothing below is a real standing yet. ' +
+        '<button class="btn ghost" id="regDemo" style="margin-top:10px">Preview the reveal</button>';
+      $("#regDemo").addEventListener("click", () => {
+        paintStandings(["zilla", "citizen", "guardian", "royal"], true);
+        SND.power();
+        regMsg.innerHTML = '<span class="warn">Preview only.</span> This is what a full-standing ' +
+          'wallet will look like. No balances were read.';
+        $("#regLocker").hidden = false;
+      });
+      return;
+    }
+    const list = standingsFor(bal);
+    ENT = { wallet: w, balances: bal, standings: list, at: Date.now() };
+    saveEnt();
+    const any = paintStandings(list, true);
+    if (any) {
+      const names = list.map(id => STANDINGS.find(x => x.id === id).n).join(" · ");
+      regMsg.innerHTML = "<b>The realm recognizes you.</b> Standing updated: " + names + ".";
+      SND.power(); toast("Your crest has awakened");
+    } else {
+      regMsg.textContent = "The realm has not recognized a standing for this wallet yet. " +
+        "You can still play and earn Guardian XP — trophies are won on the road, not held in a wallet.";
+    }
+  } catch (e) {
+    regMsg.innerHTML = '<span class="warn">The registry could not be reached.</span> ' +
+      'Try again in a moment. Your saved standing is unaffected.';
+  }
+}
+
+if (ENT && ENT.standings) paintStandings(ENT.standings, false);
+if (ENT && !ENT.preview && Date.now() - ENT.at > REG.TTL && ENT.wallet) {
+  $("#regAddr").value = ENT.wallet; runCheck(true);   // silent refresh on return
+}
+
+/* ============================================================
+   THE GUARDIAN LOCKER
+   Holder cosmetics (standing) sit beside earned cosmetics (skill).
+   Nothing in here touches damage, speed, score, health or cooldowns.
+   ============================================================ */
+const FREE = { t:"free" };
+const LOCKER = [
+  { k:"crest", n:"Crest", o:[
+    { id:"crest_tz",    g:"🛡️", n:"TZ Shield",         r:FREE },
+    { id:"crest_zilla", g:"🦖", n:"Zilla Sigil",        r:{t:"stand",v:"zilla"} },
+    { id:"crest_toez",  g:"🦶", n:"Toezlandia Seal",    r:{t:"stand",v:"citizen"} },
+    { id:"crest_guard", g:"🌀", n:"Guardian Portal",    r:{t:"stand",v:"guardian"} },
+    { id:"crest_shred", g:"📄", n:"Paper Shredder",     r:{t:"earn",k:"bosses",v:1,d:"Defeat King Jeet"} }]},
+  { k:"frame", n:"Profile Frame", o:[
+    { id:"frame_plain", g:"▫️", n:"Plain",              r:FREE },
+    { id:"frame_arc",   g:"🟣", n:"Arc Violet",         r:{t:"stand",v:"zilla"} },
+    { id:"frame_gold",  g:"🟡", n:"Realm Gold",         r:{t:"stand",v:"citizen"} },
+    { id:"frame_guard", g:"✨", n:"Guardian Frame",     r:{t:"stand",v:"guardian"} },
+    { id:"frame_royal", g:"👑", n:"Royal Frame",        r:{t:"stand",v:"royal"} }]},
+  { k:"plate", n:"Nameplate", o:[
+    { id:"plate_bone",  g:"🏷️", n:"Bone",              r:FREE },
+    { id:"plate_toxic", g:"🟢", n:"Toxic Green",        r:{t:"stand",v:"zilla"} },
+    { id:"plate_gold",  g:"🟨", n:"Gold Leaf",          r:{t:"stand",v:"royal"} },
+    { id:"plate_legend",g:"📜", n:"Legend Script",      r:{t:"earn",k:"level",v:25,d:"Reach Guardian, level 25"} }]},
+  { k:"skin", n:"Turdzilla Cosmetic", o:[
+    { id:"skin_base",   g:"🦖", n:"Standard",           r:FREE },
+    { id:"skin_chain",  g:"⛓️", n:"Heavy Chain",        r:{t:"stand",v:"zilla"} },
+    { id:"skin_gilded", g:"🥇", n:"Gilded Plates",      r:{t:"stand",v:"royal"} },
+    { id:"skin_scarred",g:"🩹", n:"Scarred Veteran",    r:{t:"earn",k:"kills",v:2000,d:"Crush 2,000 invaders"} }]},
+  { k:"entrance", n:"Entrance Effect", o:[
+    { id:"ent_none",    g:"·",  n:"Walk On",            r:FREE },
+    { id:"ent_flare",   g:"💜", n:"Purple TZ Flare",    r:{t:"stand",v:"zilla"} },
+    { id:"ent_steps",   g:"🦶", n:"Gold Footfall",      r:{t:"stand",v:"citizen"} },
+    { id:"ent_portal",  g:"🌀", n:"Dimensional Gateway",r:{t:"stand",v:"guardian"} },
+    { id:"ent_crown",   g:"👑", n:"Crown Descent",      r:{t:"stand",v:"royal"} }]},
+  { k:"trail", n:"Movement Trail", o:[
+    { id:"trail_none",  g:"·",  n:"None",               r:FREE },
+    { id:"trail_ash",   g:"🌫️", n:"Realm Ash",          r:{t:"stand",v:"zilla"} },
+    { id:"trail_gold",  g:"✨", n:"Gold Dust",          r:{t:"stand",v:"citizen"} },
+    { id:"trail_both",  g:"🌈", n:"Twin Realm",         r:{t:"stand",v:"guardian"} }]},
+  { k:"quake", n:"Turdquake Effect", o:[
+    { id:"quake_green", g:"🟩", n:"Toxic Shockwave",    r:FREE },
+    { id:"quake_violet",g:"🟪", n:"Violet Collapse",    r:{t:"stand",v:"zilla"} },
+    { id:"quake_gold",  g:"🟧", n:"Royal Detonation",   r:{t:"stand",v:"royal"} },
+    { id:"quake_rift",  g:"🌀", n:"Rift Bloom",         r:{t:"earn",k:"chain",v:50,d:"Reach a 50 enemy chain"} }]},
+  { k:"kill", n:"Kill Effect", o:[
+    { id:"kill_std",    g:"💥", n:"Standard",           r:FREE },
+    { id:"kill_spark",  g:"⚡", n:"Arc Burst",          r:{t:"stand",v:"zilla"} },
+    { id:"kill_coin",   g:"🪙", n:"Coin Scatter",       r:{t:"stand",v:"citizen"} },
+    { id:"kill_shred",  g:"📄", n:"Paper Shred",        r:{t:"earn",k:"bosses",v:3,d:"Defeat King Jeet three times"} }]},
+  { k:"victory", n:"Victory Pose", o:[
+    { id:"vic_std",     g:"🦖", n:"Arms Raised",        r:FREE },
+    { id:"vic_chain",   g:"⛓️", n:"Chain Flex",         r:{t:"stand",v:"zilla"} },
+    { id:"vic_bow",     g:"🎖️", n:"Realm Salute",       r:{t:"stand",v:"citizen"} },
+    { id:"vic_crown",   g:"👑", n:"Crowned",            r:{t:"stand",v:"royal"} }]},
+  { k:"banner", n:"Castle Banner", o:[
+    { id:"ban_toez",    g:"🦶", n:"House of Toez",      r:FREE },
+    { id:"ban_tz",      g:"🛡️", n:"TZ Standard",        r:{t:"stand",v:"zilla"} },
+    { id:"ban_alliance",g:"🤝", n:"Alliance Colours",   r:{t:"stand",v:"guardian"} },
+    { id:"ban_perfect", g:"🏰", n:"Unbreached",         r:{t:"earn",k:"chain",v:100,d:"Reach a 100 enemy chain"} }]},
+  { k:"badge", n:"Seasonal Badge", o:[
+    { id:"badge_none",  g:"·",  n:"None",               r:FREE },
+    { id:"badge_s1",    g:"1️⃣", n:"Season One",         r:FREE },
+    { id:"badge_found", g:"🌟", n:"Founding Guardian",  r:{t:"stand",v:"guardian"} },
+    { id:"badge_leg",   g:"🏆", n:"Legend of Toezlandia",r:{t:"earn",k:"level",v:100,d:"Reach level 100"} }]}
+];
+
+function earnedStats() {
+  const xp = ls("dt_xp", 0);
+  return { level: guardianLevel(xp), kills: ls("dt_globalkills", 0),
+           best: ls("dt_best", 0), chain: ls("dt_bestchain", 0), bosses: ls("dt_bosses", 0) };
+}
+function reqMet(r, stands, st) {
+  if (r.t === "free") return true;
+  if (r.t === "stand") return stands.includes(r.v);
+  if (r.t === "earn") return (st[r.k] || 0) >= r.v;
+  return false;
+}
+function reqText(r) {
+  if (r.t === "free") return "Open to all";
+  if (r.t === "stand") return (STANDINGS.find(x => x.id === r.v) || {}).n || r.v;
+  return r.d;
+}
+
+const locker = $("#locker");
+async function openLocker() {
+  await startOfficialSite();
+
+  const stands =
+    SITE_MODE === "server"
+      ? OFFICIAL_STANDINGS
+      : (
+          (ENT && ENT.standings) ||
+          []
+        );
+
+  const st = earnedStats();
+  $("#lockerWho").textContent = stands.length
+    ? stands.map(id => STANDINGS.find(x => x.id === id).n).join(" · ")
+    : "No standing yet";
+  $("#lockerSub").textContent = stands.length
+    ? "Everything here is cosmetic. None of it touches damage, speed, score or cooldowns."
+    : "You can still equip anything you have earned on the road. Trophies do not need a wallet.";
+  const box = $("#lockerSlots"); box.innerHTML = "";
+  LOCKER.forEach(slot => {
+    if (!LOADOUT[slot.k]) {
+  LOADOUT[slot.k] =
+    slot.o[0].id;
+}
+
+const sec =
+  document.createElement("div");
+
+sec.className = "slot";
+
+let cur =
+  slot.o.find(
+    o =>
+      o.id === LOADOUT[slot.k] &&
+      reqMet(
+        o.r,
+        stands,
+        st
+      )
+  );
+
+if (!cur) {
+  cur =
+    slot.o.find(
+      o =>
+        reqMet(
+          o.r,
+          stands,
+          st
+        )
+    ) ||
+    slot.o[0];
+
+  LOADOUT[slot.k] =
+    cur.id;
+}
+    sec.innerHTML = '<h4>' + slot.n + '</h4><div class="eq">Equipped: <span>' + cur.n + '</span></div>' +
+                    '<div class="opts"></div>';
+    const opts = sec.querySelector(".opts");
+    slot.o.forEach(o => {
+      const ok = reqMet(o.r, stands, st);
+      const b = document.createElement("button");
+      b.className = "opt " + (ok ? "" : "off ") + (LOADOUT[slot.k] === o.id && ok ? "on" : "");
+      b.innerHTML = '<span class="g">' + o.g + '</span><span class="n">' + o.n + '</span>' +
+        '<span class="rq' + (o.r.t === "earn" ? " earned" : "") + '">' + reqText(o.r) + '</span>';
+      b.addEventListener(
+  "click",
+  async () => {
+    if (!ok) {
+      toast(
+        o.r.t === "earn"
+          ? "Win it on the road: " +
+              o.r.d
+          : "Requires " +
+              reqText(o.r)
+      );
+
+      return;
+    }
+
+    const previous =
+      LOADOUT[slot.k];
+
+    LOADOUT[slot.k] =
+      o.id;
+
+    saveLoadout();
+    SND.tap();
+
+    sec.querySelector(
+      ".eq span"
+    ).textContent = o.n;
+
+    opts
+      .querySelectorAll(".opt")
+      .forEach(
+        x =>
+          x.classList.remove(
+            "on"
+          )
+      );
+
+    b.classList.add("on");
+
+    if (
+      SITE_MODE === "server"
+    ) {
+      try {
+        await saveOfficialLoadout();
+
+        toast(
+          "Guardian Locker saved"
+        );
+
+      } catch (e) {
+        LOADOUT[slot.k] =
+          previous;
+
+        saveLoadout();
+
+        toast(
+          "Could not save that cosmetic"
+        );
+
+        openLocker();
+      }
+    }
+  }
+);
+      opts.appendChild(b);
+    });
+    box.appendChild(sec);
+  });
+  saveLoadout();
+  locker.classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeLocker() { locker.classList.remove("on"); document.body.style.overflow = ""; }
+$("#regLocker").addEventListener(
+  "click",
+  async () => {
+    await startOfficialSite();
+    SND.tap();
+    openLocker();
+  }
+);
+$("#lockerClose").addEventListener("click", closeLocker);
+$("#lockerBg").addEventListener("click", closeLocker);
+
+/* ============ in-page navigation ============ */
+$$("[data-goto]").forEach(b => b.addEventListener("click", () => {
+  const t = document.getElementById(b.dataset.goto);
+  if (t) t.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+}));
+$$("[data-standing]").forEach(b => b.addEventListener("click", () => {
+  const reg = $("#registry");
+  if (reg) reg.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+  if (!regPanel.classList.contains("on")) $("#regCheck").click();
+}));
+const gl = $("#gateLocker");
+
+if (gl) {
+  gl.addEventListener(
+    "click",
+    async () => {
+      await startOfficialSite();
+
+      if (
+        SITE_MODE !== "server" &&
+        !ENT
+      ) {
+        $("#registry").scrollIntoView({
+          behavior: REDUCED
+            ? "auto"
+            : "smooth"
+        });
+
+        if (
+          !regPanel.classList.contains(
+            "on"
+          )
+        ) {
+          $("#regCheck").click();
+        }
+
+        toast(
+          "Check your standing first"
+        );
+
+        return;
+      }
+
+      SND.tap();
+      openLocker();
+    }
+  );
+}
+
+/* ============ bot deep links ============ */
+async function handleDazillaDeepLink() {
+  const target =
+    new URLSearchParams(
+      location.search
+    ).get("open");
+
+  if (!target) return;
+
+  if (target === "play") {
+    await openPlay();
+    return;
+  }
+
+  if (target === "locker") {
+    await openLocker();
+    return;
+  }
+
+  if (target === "wallet") {
+    await startOfficialSite();
+
+    const registry =
+      document.getElementById(
+        "registry"
+      );
+
+    if (registry) {
+      registry.scrollIntoView({
+        behavior: REDUCED
+          ? "auto"
+          : "smooth",
+        block: "start"
+      });
+    }
+
+    return;
+  }
+}
+
+/* ============ boot ============ */
+onScroll();
+readRecord();
+startOfficialSite();
+handleDazillaDeepLink();
+</script>
+</body>
+</html>
